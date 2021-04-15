@@ -189,7 +189,7 @@ Citizen.CreateThread(function()
                                     if IsPedInAnyVehicle(PlayerPedId()) then
                                         if not IsThisModelABicycle(GetEntityModel(veh)) then
                                             DrawText3Ds(v.coords.x, v.coords.y, v.coords.z + 0.3, "[E] Place The Vehicle On The Platform")
-                                            if IsControlJustPressed(0, Config.38) then
+                                            if IsControlJustPressed(0, 38) then
                                                 DoScreenFadeOut(150)
                                                 Wait(150)
                                                 Config.Plates[ClosestPlate].AttachedVehicle = veh

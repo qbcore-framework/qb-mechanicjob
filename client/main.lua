@@ -114,7 +114,7 @@ Citizen.CreateThread(function()
             if PlayerJob.name == "mechanic" then
                 local pos = GetEntityCoords(PlayerPedId())
                 local StashDistance = #(pos - vector3(Config.Locations["stash"].x, Config.Locations["stash"].y, Config.Locations["stash"].z))
-                local OnDutyDistance = #(pos - vector3(Config.Locations["duty"].x, Config.Locations["duty"].y, Config.Locations["duty"].z)))
+                local OnDutyDistance = #(pos - vector3(Config.Locations["duty"].x, Config.Locations["duty"].y, Config.Locations["duty"].z))
                 local VehicleDistance = #(pos - vector3(Config.Locations["vehicle"].x, Config.Locations["vehicle"].y, Config.Locations["vehicle"].z))
 
                 if onDuty then

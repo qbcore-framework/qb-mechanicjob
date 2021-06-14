@@ -53,16 +53,16 @@ AddEventHandler('qb-vehicletuning:server:UpdateDrivingDistance', function(amount
 
     TriggerClientEvent('qb-vehicletuning:client:UpdateDrivingDistance', -1, VehicleDrivingDistance[plate], plate)
 
-    QBCore.Functions.ExecuteSql(false, "SELECT * FROM `player_vehicles` WHERE `plate` = '"..plate.."'", function(result)
+    QBCore.Functions.ExecuteSql(false, {['a'] = plate}, "SELECT * FROM `player_vehicles` WHERE `plate` = @a", function(result)
         if result[1] ~= nil then
-            QBCore.Functions.ExecuteSql(false, "UPDATE `player_vehicles` SET `drivingdistance` = '"..amount.."' WHERE `plate` = '"..plate.."'")
+            QBCore.Functions.ExecuteSql(false, {['a'] = amount, ['b'] = plate}, "UPDATE `player_vehicles` SET `drivingdistance` = @a WHERE `plate` = @b")
         end
     end)
 end)
 
 QBCore.Functions.CreateCallback('qb-vehicletuning:server:IsVehicleOwned', function(source, cb, plate)
     local retval = false
-    QBCore.Functions.ExecuteSql(false, "SELECT * FROM `player_vehicles` WHERE `plate` = '"..plate.."'", function(result)
+    QBCore.Functions.ExecuteSql(false, {['a'] = plate}, "SELECT * FROM `player_vehicles` WHERE `plate` = @a", function(result)
         if result[1] ~= nil then
             retval = true
         end
@@ -125,7 +125,7 @@ end)
 
 function IsVehicleOwned(plate)
     local retval = false
-    QBCore.Functions.ExecuteSql(true, "SELECT * FROM `player_vehicles` WHERE `plate` = '"..plate.."'", function(result)
+    QBCore.Functions.ExecuteSql(true, {['a'] = plate}, "SELECT * FROM `player_vehicles` WHERE `plate` = @a", function(result)
         if result[1] ~= nil then
             retval = true
         end
@@ -135,7 +135,7 @@ end
 
 function GetVehicleStatus(plate)
     local retval = nil
-    QBCore.Functions.ExecuteSql(true, "SELECT `status` FROM `player_vehicles` WHERE `plate` = '"..plate.."'", function(result)
+    QBCore.Functions.ExecuteSql(true, {['a'] = plate}, "SELECT `status` FROM `player_vehicles` WHERE `plate` = @a", function(result)
         if result[1] ~= nil then
             retval = result[1].status ~= nil and json.decode(result[1].status) or nil
         end

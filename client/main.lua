@@ -194,7 +194,7 @@ Citizen.CreateThread(function()
                                                 Wait(150)
                                                 Config.Plates[ClosestPlate].AttachedVehicle = veh
                                                 SetEntityCoords(veh, v.coords.x, v.coords.y, v.coords.z)
-                                                SetEntityHeading(veh, v.coords.h)
+                                                SetEntityHeading(veh, v.coords.w)
                                                 FreezeEntityPosition(veh, true)
                                                 Wait(500)
                                                 DoScreenFadeIn(250)
@@ -258,12 +258,12 @@ function SpawnListVehicle(model)
         x = Config.Locations["vehicle"].x,
         y = Config.Locations["vehicle"].y,
         z = Config.Locations["vehicle"].z,
-        h = Config.Locations["vehicle"].h,
+        h = Config.Locations["vehicle"].w,
     }
     local plate = "AC"..math.random(1111, 9999)
     QBCore.Functions.SpawnVehicle(model, function(veh)
         SetVehicleNumberPlateText(veh, "ACBV"..tostring(math.random(1000, 9999)))
-        SetEntityHeading(veh, coords.h)
+        SetEntityHeading(veh, coords.w)
         exports['LegacyFuel']:SetFuel(veh, 100.0)
         Menu.hidden = true
         TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
@@ -395,7 +395,7 @@ function UnattachVehicle()
     Wait(150)
     FreezeEntityPosition(Config.Plates[ClosestPlate].AttachedVehicle, false)
     SetEntityCoords(Config.Plates[ClosestPlate].AttachedVehicle, Config.Plates[ClosestPlate].coords.x, Config.Plates[ClosestPlate].coords.y, Config.Plates[ClosestPlate].coords.z)
-    SetEntityHeading(Config.Plates[ClosestPlate].AttachedVehicle, Config.Plates[ClosestPlate].coords.h)
+    SetEntityHeading(Config.Plates[ClosestPlate].AttachedVehicle, Config.Plates[ClosestPlate].coords.w)
     TaskWarpPedIntoVehicle(PlayerPedId(), Config.Plates[ClosestPlate].AttachedVehicle, -1)
     Wait(500)
     DoScreenFadeIn(250)

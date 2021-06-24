@@ -72,28 +72,28 @@ Config.Businesses = {
 
 Config.Plates = {
     [1] = {
-        coords = {x = 937.91, y = -970.64, z = 39.49, h = 271.5, r = 1.0},
+        coords = vector4(937.91, -970.64, 39.49, 271.5),
         AttachedVehicle = nil,
     },
     [2] = {
-        coords = {x = 922.37, y = -979.86, z = 39.49, h = 271.5, r = 1.0}, 
+        coords = vector4(922.37, -979.86, 39.49, 271.5), 
         AttachedVehicle = nil,
     },
     [3] = {
-        coords = {x = 921.54, y = -962.17, z = 39.49, h = 274.5, r = 1.0}, 
+        coords = vector4(921.54, -962.17, 39.49, 274.5), 
         AttachedVehicle = nil,
     },
     [4] = {
-        coords = {x = 949.89, y = -947.75, z = 39.49, h = 90.5, r = 1.0}, 
+        coords = vector4(949.89, -947.75, 39.49, 90.5), 
         AttachedVehicle = nil,
     },
 }
 
 Config.Locations = {
-    ["exit"] = {x = 945.13, y = -975.84, z = 39.49, h = 181.5, r = 1.0},
-    ["stash"] = {x = 947.62, y = -972.46, z = 39.49, h = 274.5, r = 1.0},
-    ["duty"] = {x = 950.73, y = -968.64, z = 39.5, h = 180.5, r = 1.0},
-    ["vehicle"] = {x = 937.93, y = -990.7, z = 38.42, h = 94.5, r = 1.0}, 
+    ["exit"] = vector4(945.13, -975.84, 39.49, 181.5),
+    ["stash"] = vector4(947.62, -972.46, 39.49, 274.5),
+    ["duty"] = vector4(950.73, -968.64, 39.5, 180.5),
+    ["vehicle"] = vector4(937.93, -990.7, 38.42, 94.5), 
 }
 
 Config.Vehicles = {

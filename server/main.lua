@@ -183,7 +183,7 @@ AddEventHandler('qb-vehicletuning:server:CheckForItems', function(part)
     local Player = QBCore.Functions.GetPlayer(src)
     local RepairPart = Player.Functions.GetItemByName(Config.RepairCostAmount[part].item)
 
-    if RepairPart > 0 then
+    if RepairPart ~= nil then
         if RepairPart.amount >= Config.RepairCostAmount[part].costs then
             TriggerClientEvent('qb-vehicletuning:client:RepaireeePart', src, part)
             Player.Functions.RemoveItem(Config.RepairCostAmount[part].item, Config.RepairCostAmount[part].costs)

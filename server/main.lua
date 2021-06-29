@@ -8,6 +8,14 @@ QBCore.Functions.CreateCallback('qb-vehicletuning:server:GetDrivingDistances', f
     cb(VehicleDrivingDistance)
 end)
 
+RegisterServerEvent('qb-vehicletuning:server:SaveVehicleProps')
+AddEventHandler('qb-vehicletuning:server:SaveVehicleProps', function(vehicleProps)
+    local src = source
+    if IsVehicleOwned(vehicleProps.plate) then
+        exports.ghmattimysql:execute('UPDATE player_vehicles SET mods=@mods WHERE plate=@plate', {['@mods'] = json.encode(vehicleProps), ['@plate'] = vehicleProps.plate})
+    end
+end)
+
 RegisterServerEvent("vehiclemod:server:setupVehicleStatus")
 AddEventHandler("vehiclemod:server:setupVehicleStatus", function(plate, engineHealth, bodyHealth)
     local src = source

@@ -56,7 +56,7 @@ RegisterServerEvent('qb-vehicletuning:server:UpdateDrivingDistance')
 AddEventHandler('qb-vehicletuning:server:UpdateDrivingDistance', function(amount, plate)
     VehicleDrivingDistance[plate] = amount
     TriggerClientEvent('qb-vehicletuning:client:UpdateDrivingDistance', -1, VehicleDrivingDistance[plate], plate)
-    exports.ghmattimysql:execute('SELECT * FROM player_vehicles WHERE plate=@plate', {['@plate'] = plate}, function(result)
+    exports.ghmattimysql:execute('SELECT plate FROM player_vehicles WHERE plate=@plate', {['@plate'] = plate}, function(result)
         if result[1] ~= nil then
             exports.ghmattimysql:execute('UPDATE player_vehicles SET drivingdistance=@drivingdistance WHERE plate=@plate', {['@drivingdistance'] = amount, ['@plate'] = plate})
         end
@@ -65,7 +65,7 @@ end)
 
 QBCore.Functions.CreateCallback('qb-vehicletuning:server:IsVehicleOwned', function(source, cb, plate)
     local retval = false
-    exports.ghmattimysql:execute('SELECT * FROM player_vehicles WHERE plate=@plate', {['@plate'] = plate}, function(result)
+    exports.ghmattimysql:execute('SELECT plate FROM player_vehicles WHERE plate=@plate', {['@plate'] = plate}, function(result)
         if result[1] ~= nil then
             retval = true
         end
@@ -128,7 +128,7 @@ end)
 
 function IsVehicleOwned(plate)
     local retval = false
-    QBCore.Functions.ExecuteSql(true, "SELECT * FROM `player_vehicles` WHERE `plate` = '"..plate.."'", function(result)
+    QBCore.Functions.ExecuteSql(true, "SELECT plate FROM `player_vehicles` WHERE `plate` = '"..plate.."'", function(result)
         if result[1] ~= nil then
             retval = true
         end

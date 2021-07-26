@@ -321,6 +321,9 @@ end
 function RepairPart(part)
     local plate = GetVehicleNumberPlateText(Config.Plates[ClosestPlate].AttachedVehicle)
     local PartData = Config.RepairCostAmount[part]
+    local hasitem = false
+    local indx = 0
+    local countitem = 0
 
     QBCore.Functions.TriggerCallback('qb-inventory:server:GetStashItems', function(StashItems)
         for k,v in pairs(StashItems) do

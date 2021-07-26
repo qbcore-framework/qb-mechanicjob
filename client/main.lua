@@ -226,10 +226,6 @@ Citizen.CreateThread(function()
     end
 end)
 
-function niks()
-    print('niks')
-end
-
 function OpenMenu()
     ClearMenu()
     Menu.addButton("Options", "VehicleOptions", nil)

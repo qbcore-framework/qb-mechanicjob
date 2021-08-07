@@ -346,6 +346,7 @@ function RepairPart(part)
                     StashItems[indx] = nil
                 else
                     countitem = (countitem - PartData.costs)
+                    StashItems[indx].amount = countitem
                 end
                 TriggerEvent('qb-vehicletuning:client:RepaireeePart', part)
                 TriggerServerEvent('qb-inventory:server:SaveStashItems', "mechanicstash", StashItems)

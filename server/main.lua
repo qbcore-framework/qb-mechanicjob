@@ -1,5 +1,6 @@
 local VehicleStatus = {}
 local VehicleDrivingDistance = {}
+local VehicleCache = {}
 
 QBCore.Functions.CreateCallback('qb-vehicletuning:server:GetDrivingDistances', function(source, cb)
     cb(VehicleDrivingDistance)
@@ -56,6 +57,11 @@ RegisterServerEvent('qb-vehicletuning:server:UpdateDrivingDistance')
 AddEventHandler('qb-vehicletuning:server:UpdateDrivingDistance', function(amount, plate)
     VehicleDrivingDistance[plate] = amount
     TriggerClientEvent('qb-vehicletuning:client:UpdateDrivingDistance', -1, VehicleDrivingDistance[plate], plate)
+
+    if (not IsVehicleOwned(plate)) then
+        return
+    end
+    
     local result = exports.ghmattimysql:executeSync('SELECT plate FROM player_vehicles WHERE plate=@plate', {['@plate'] = plate})
     if result[1] ~= nil then
         exports.ghmattimysql:execute('UPDATE player_vehicles SET drivingdistance=@drivingdistance WHERE plate=@plate', {['@drivingdistance'] = amount, ['@plate'] = plate})
@@ -63,11 +69,18 @@ AddEventHandler('qb-vehicletuning:server:UpdateDrivingDistance', function(amount
 end)
 
 QBCore.Functions.CreateCallback('qb-vehicletuning:server:IsVehicleOwned', function(source, cb, plate)
+
+    if (VehicleCache[plate] ~= nil) then
+        return VehicleCache[plate]
+    end
+
     local retval = false
     local result = exports.ghmattimysql:scalarSync('SELECT 1 from player_vehicles WHERE plate=@plate', {['@plate'] = plate})
     if result then 
         retval = true 
     end
+
+    VehicleCache[plate] = retval
     cb(retval)
 end)
 
@@ -125,8 +138,14 @@ AddEventHandler("vehiclemod:server:saveStatus", function(plate)
 end)
 
 function IsVehicleOwned(plate)
+    if (VehicleCache[plate] ~= nil) then
+        return VehicleCache[plate]
+    end
+
     local result = exports.ghmattimysql:scalarSync('SELECT 1 from player_vehicles WHERE plate=@plate', {['@plate'] = plate})
     if result then return true else return false end
+
+    VehicleCache[plate] = result and true or false
 end
 
 function GetVehicleStatus(plate)
@@ -255,5 +274,12 @@ QBCore.Functions.CreateCallback('qb-vehicletuning:server:GetStatus', function(so
         cb(VehicleStatus[plate])
     else
         cb(nil)
+    end
+end)
+
+Citizen.CreateThread(function()
+    while (true) do
+        Citizen.Wait(5 * 60000)
+        VehicleCache = {}
     end
 end)

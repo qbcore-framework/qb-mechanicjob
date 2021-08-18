@@ -61,7 +61,7 @@ AddEventHandler('qb-vehicletuning:server:UpdateDrivingDistance', function(amount
     if (not IsVehicleOwned(plate)) then
         return
     end
-    
+
     local result = exports.ghmattimysql:executeSync('SELECT plate FROM player_vehicles WHERE plate=@plate', {['@plate'] = plate})
     if result[1] ~= nil then
         exports.ghmattimysql:execute('UPDATE player_vehicles SET drivingdistance=@drivingdistance WHERE plate=@plate', {['@drivingdistance'] = amount, ['@plate'] = plate})
@@ -71,7 +71,8 @@ end)
 QBCore.Functions.CreateCallback('qb-vehicletuning:server:IsVehicleOwned', function(source, cb, plate)
 
     if (VehicleCache[plate] ~= nil) then
-        return VehicleCache[plate]
+        cb(VehicleCache[plate])
+        return
     end
 
     local retval = false

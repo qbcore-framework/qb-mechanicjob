@@ -336,12 +336,14 @@ function RepairPart(part)
             end
         end
         if hasitem and countitem >= PartData.costs then
-            QBCore.Functions.Progressbar("repair_part", Config.ValuesLabels[part].." repairing", math.random(5000, 10000), false, true, {
+            TriggerEvent('animations:client:EmoteCommandStart', {"mechanic"})
+            QBCore.Functions.Progressbar("repair_part", "Repairing " ..Config.ValuesLabels[part], math.random(5000, 10000), false, true, {
                 disableMovement = true,
                 disableCarMovement = true,
                 disableMouse = false,
                 disableCombat = true,
             }, {}, {}, {}, function() -- Done
+                TriggerEvent('animations:client:EmoteCommandStart', {"c"})
                 if (countitem - PartData.costs) <= 0 then
                     StashItems[indx] = nil
                 else

@@ -104,8 +104,8 @@ Citizen.CreateThread(function()
         if isLoggedIn then
             if PlayerJob.name == "mechanic" then
                 local pos = GetEntityCoords(PlayerPedId())
-                local StashDistance = #(pos - vector3(Config.Locations["stash"].x, Config.Locations["stash"].y, Config.Locations["stash"].z))
-                local OnDutyDistance = #(pos - vector3(Config.Locations["duty"].x, Config.Locations["duty"].y, Config.Locations["duty"].z))
+                local StashDistance = #(pos - Config.Locations["stash"])
+                local OnDutyDistance = #(pos - Config.Locations["duty"])
                 local VehicleDistance = #(pos - vector3(Config.Locations["vehicle"].x, Config.Locations["vehicle"].y, Config.Locations["vehicle"].z))
 
                 if onDuty then
@@ -184,7 +184,7 @@ Citizen.CreateThread(function()
                                                 DoScreenFadeOut(150)
                                                 Wait(150)
                                                 Config.Plates[ClosestPlate].AttachedVehicle = veh
-                                                SetEntityCoords(veh, v.coords.x, v.coords.y, v.coords.z)
+                                                SetEntityCoords(veh, v.coords)
                                                 SetEntityHeading(veh, v.coords.w)
                                                 FreezeEntityPosition(veh, true)
                                                 Wait(500)
@@ -245,9 +245,9 @@ function SpawnListVehicle(model)
         x = Config.Locations["vehicle"].x,
         y = Config.Locations["vehicle"].y,
         z = Config.Locations["vehicle"].z,
-        h = Config.Locations["vehicle"].w,
+        w = Config.Locations["vehicle"].w,
     }
-    local plate = "AC"..math.random(1111, 9999)
+
     QBCore.Functions.SpawnVehicle(model, function(veh)
         SetVehicleNumberPlateText(veh, "ACBV"..tostring(math.random(1000, 9999)))
         SetEntityHeading(veh, coords.w)
@@ -342,12 +342,14 @@ function RepairPart(part)
                 end
             end
             if hasitem and countitem >= PartData.costs then
-                QBCore.Functions.Progressbar("repair_part", Config.ValuesLabels[part].." repairing", math.random(5000, 10000), false, true, {
+                TriggerEvent('animations:client:EmoteCommandStart', {"mechanic"})
+                QBCore.Functions.Progressbar("repair_part", "Repairing " ..Config.ValuesLabels[part], math.random(5000, 10000), false, true, {
                     disableMovement = true,
                     disableCarMovement = true,
                     disableMouse = false,
                     disableCombat = true,
                 }, {}, {}, {}, function() -- Done
+                    TriggerEvent('animations:client:EmoteCommandStart', {"c"})
                     if (countitem - PartData.costs) <= 0 then
                         StashItems[indx] = nil
                     else

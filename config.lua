@@ -2,6 +2,8 @@ Config = {}
 
 Config.AttachedVehicle = nil
 
+Config.UseRepairCost = true
+
 Config.AuthorizedIds = {
     "insertcitizenidhere",
 }

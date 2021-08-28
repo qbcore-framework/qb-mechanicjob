@@ -306,7 +306,11 @@ end
 
 function PartMenu(part)
     ClearMenu()
-    Menu.addButton("Repair ("..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." "..Config.RepairCostAmount[part].costs.."x)", "RepairPart", part)
+    local label = "Repair"
+    if Config.UseRepairCost == true then
+        label = "Repair ("..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." "..Config.RepairCostAmount[part].costs.."x)" 
+    end
+    Menu.addButton(label, "RepairPart", part)
     Menu.addButton("Back", "VehicleOptions", nil)
     Menu.addButton("Close Menu", "CloseMenu", nil) 
 end
@@ -320,45 +324,67 @@ end
 
 function RepairPart(part)
     local plate = GetVehicleNumberPlateText(Config.Plates[ClosestPlate].AttachedVehicle)
-    local PartData = Config.RepairCostAmount[part]
     local hasitem = false
     local indx = 0
     local countitem = 0
 
-    QBCore.Functions.TriggerCallback('qb-inventory:server:GetStashItems', function(StashItems)
-        for k,v in pairs(StashItems) do
-            if v.name == PartData.item then
-                hasitem = true
-                if v.amount >= PartData.costs then
-                    countitem = v.amount
-                    indx = k
+    if Config.UseRepairCost == true then
+
+        local PartData = Config.RepairCostAmount[part]
+        QBCore.Functions.TriggerCallback('qb-inventory:server:GetStashItems', function(StashItems)
+            for k,v in pairs(StashItems) do
+                if v.name == PartData.item then
+                    hasitem = true
+                    if v.amount >= PartData.costs then
+                        countitem = v.amount
+                        indx = k
+                    end
                 end
             end
-        end
-        if hasitem and countitem >= PartData.costs then
-            QBCore.Functions.Progressbar("repair_part", Config.ValuesLabels[part].." repairing", math.random(5000, 10000), false, true, {
-                disableMovement = true,
-                disableCarMovement = true,
-                disableMouse = false,
-                disableCombat = true,
-            }, {}, {}, {}, function() -- Done
-                if (countitem - PartData.costs) <= 0 then
-                    StashItems[indx] = nil
-                else
-                    countitem = (countitem - PartData.costs)
-                end
-                TriggerEvent('qb-vehicletuning:client:RepaireeePart', part)
-                TriggerServerEvent('qb-inventory:server:SaveStashItems', "mechanicstash", StashItems)
-                SetTimeout(250, function()
-                    PartsMenu()
+            if hasitem and countitem >= PartData.costs then
+                QBCore.Functions.Progressbar("repair_part", Config.ValuesLabels[part].." repairing", math.random(5000, 10000), false, true, {
+                    disableMovement = true,
+                    disableCarMovement = true,
+                    disableMouse = false,
+                    disableCombat = true,
+                }, {}, {}, {}, function() -- Done
+                    if (countitem - PartData.costs) <= 0 then
+                        StashItems[indx] = nil
+                    else
+                        countitem = (countitem - PartData.costs)
+                    end
+                    TriggerServerEvent('qb-inventory:server:SaveStashItems', "mechanicstash", StashItems)
+                    TriggerEvent('qb-vehicletuning:client:RepaireeePart', part)
+                    SetTimeout(250, function()
+                        PartsMenu()
+                    end)
+                end, function()
+                    QBCore.Functions.Notify("Repair Cancelled", "error")
                 end)
-            end, function()
-                QBCore.Functions.Notify("Repair Cancelled", "error")
+            else
+                QBCore.Functions.Notify('There Are Not Enough Materials In The Safe', 'error')
+            end
+
+        end, "mechanicstash")
+
+    else
+
+        QBCore.Functions.Progressbar("repair_part", Config.ValuesLabels[part].." repairing", math.random(5000, 10000), false, true, {
+            disableMovement = true,
+            disableCarMovement = true,
+            disableMouse = false,
+            disableCombat = true,
+        }, {}, {}, {}, function() -- Done
+            TriggerEvent('qb-vehicletuning:client:RepaireeePart', part)
+            SetTimeout(250, function()
+                PartsMenu()
             end)
-        else
-            QBCore.Functions.Notify('There Are Not Enough Materials In The Safe', 'error')
-        end
-    end, "mechanicstash")
+        end, function()
+            QBCore.Functions.Notify("Repair Cancelled", "error")
+        end)
+
+    end
+
 end
 
 --

@@ -174,24 +174,26 @@ end)
 
 RegisterServerEvent('qb-vehicletuning:server:CheckForItems')
 AddEventHandler('qb-vehicletuning:server:CheckForItems', function(part)
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-    local RepairPart = Player.Functions.GetItemByName(Config.RepairCostAmount[part].item)
+    if Config.UseRepairCost == true then
+        local src = source
+        local Player = QBCore.Functions.GetPlayer(src)
+        local RepairPart = Player.Functions.GetItemByName(Config.RepairCostAmount[part].item)
 
-    if RepairPart ~= nil then
-        if RepairPart.amount >= Config.RepairCostAmount[part].costs then
-            TriggerClientEvent('qb-vehicletuning:client:RepaireeePart', src, part)
-            Player.Functions.RemoveItem(Config.RepairCostAmount[part].item, Config.RepairCostAmount[part].costs)
+        if RepairPart ~= nil then
+            if RepairPart.amount >= Config.RepairCostAmount[part].costs then
+                TriggerClientEvent('qb-vehicletuning:client:RepaireeePart', src, part)
+                Player.Functions.RemoveItem(Config.RepairCostAmount[part].item, Config.RepairCostAmount[part].costs)
 
-            for i = 1, Config.RepairCostAmount[part].costs, 1 do
-                TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Config.RepairCostAmount[part].item], "remove")
-                Citizen.Wait(500)
+                for i = 1, Config.RepairCostAmount[part].costs, 1 do
+                    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[Config.RepairCostAmount[part].item], "remove")
+                    Citizen.Wait(500)
+                end
+            else
+                TriggerClientEvent('QBCore:Notify', src, "You Dont Have Enough "..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." (min. "..Config.RepairCostAmount[part].costs.."x)", "error")
             end
         else
-            TriggerClientEvent('QBCore:Notify', src, "You Dont Have Enough "..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." (min. "..Config.RepairCostAmount[part].costs.."x)", "error")
+            TriggerClientEvent('QBCore:Notify', src, "You Do Not Have "..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." bij je!", "error")
         end
-    else
-        TriggerClientEvent('QBCore:Notify', src, "You Do Not Have "..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." bij je!", "error")
     end
 end)
 

@@ -93,6 +93,7 @@ Citizen.CreateThread(function()
                             local amount = round(DrivingDistance[plate] / 1000, -2)
 
                             TriggerEvent('hud:client:UpdateDrivingMeters', true, amount)
+                            TriggerServerEvent('vehiclemod:server:saveStatus', plate)
                             TriggerServerEvent('qb-vehicletuning:server:UpdateDrivingDistance', DrivingDistance[plate], plate)
                         end
                     else

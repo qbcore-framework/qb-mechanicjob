@@ -374,9 +374,11 @@ AddEventHandler('qb-vehicletuning:client:RepaireeePart', function(part)
         SetVehicleEngineHealth(veh, Config.MaxStatusValues[part])
         TriggerServerEvent("vehiclemod:server:updatePart", plate, "engine", Config.MaxStatusValues[part])
     elseif part == "body" then
+        local enhealth = GetVehicleEngineHealth(veh)
         SetVehicleBodyHealth(veh, Config.MaxStatusValues[part])
         TriggerServerEvent("vehiclemod:server:updatePart", plate, "body", Config.MaxStatusValues[part])
         SetVehicleFixed(veh)
+        SetVehicleEngineHealth(veh, enhealth)
     else
         TriggerServerEvent("vehiclemod:server:updatePart", plate, part, Config.MaxStatusValues[part])
     end
@@ -624,8 +626,10 @@ AddEventHandler('vehiclemod:client:repairPart', function(part, level, needAmount
                                 openingDoor = false
                                 ClearPedTasks(PlayerPedId())
                                 if part == "body" then
+                                    local enhealth = GetVehicleEngineHealth(veh)
                                     SetVehicleBodyHealth(veh, GetVehicleBodyHealth(veh) + level)
                                     SetVehicleFixed(veh)
+                                    SetVehicleEngineHealth(veh, enhealth)
                                     TriggerServerEvent("vehiclemod:server:updatePart", plate, part, GetVehicleBodyHealth(veh))
                                     TriggerServerEvent("QBCore:Server:RemoveItem", Config.RepairCost[part], needAmount)
                                     TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items[Config.RepairCost[part]], "remove")

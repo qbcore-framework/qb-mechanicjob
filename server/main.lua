@@ -9,7 +9,7 @@ RegisterServerEvent('qb-vehicletuning:server:SaveVehicleProps')
 AddEventHandler('qb-vehicletuning:server:SaveVehicleProps', function(vehicleProps)
     local src = source
     if IsVehicleOwned(vehicleProps.plate) then
-        exports.ghmattimysql:execute('UPDATE player_vehicles SET mods=@mods WHERE plate=@plate', {['@mods'] = json.encode(vehicleProps), ['@plate'] = vehicleProps.plate})
+        exports.oxmysql:execute('UPDATE player_vehicles SET mods=@mods WHERE plate=@plate', {['@mods'] = json.encode(vehicleProps), ['@plate'] = vehicleProps.plate})
     end
 end)
 
@@ -56,15 +56,15 @@ RegisterServerEvent('qb-vehicletuning:server:UpdateDrivingDistance')
 AddEventHandler('qb-vehicletuning:server:UpdateDrivingDistance', function(amount, plate)
     VehicleDrivingDistance[plate] = amount
     TriggerClientEvent('qb-vehicletuning:client:UpdateDrivingDistance', -1, VehicleDrivingDistance[plate], plate)
-    local result = exports.ghmattimysql:executeSync('SELECT plate FROM player_vehicles WHERE plate=@plate', {['@plate'] = plate})
+    local result = exports.oxmysql:fetchSync('SELECT plate FROM player_vehicles WHERE plate=@plate', {['@plate'] = plate})
     if result[1] ~= nil then
-        exports.ghmattimysql:execute('UPDATE player_vehicles SET drivingdistance=@drivingdistance WHERE plate=@plate', {['@drivingdistance'] = amount, ['@plate'] = plate})
+        exports.oxmysql:execute('UPDATE player_vehicles SET drivingdistance=@drivingdistance WHERE plate=@plate', {['@drivingdistance'] = amount, ['@plate'] = plate})
     end
 end)
 
 QBCore.Functions.CreateCallback('qb-vehicletuning:server:IsVehicleOwned', function(source, cb, plate)
     local retval = false
-    local result = exports.ghmattimysql:scalarSync('SELECT 1 from player_vehicles WHERE plate=@plate', {['@plate'] = plate})
+    local result = exports.oxmysql:scalarSync('SELECT 1 from player_vehicles WHERE plate=@plate', {['@plate'] = plate})
     if result then 
         retval = true 
     end
@@ -120,18 +120,18 @@ end)
 RegisterServerEvent("vehiclemod:server:saveStatus")
 AddEventHandler("vehiclemod:server:saveStatus", function(plate)
     if VehicleStatus[plate] ~= nil then
-        exports['ghmattimysql']:execute('UPDATE player_vehicles SET status = @status WHERE plate = @plate', {['@status'] = json.encode(VehicleStatus[plate]), ['@plate'] = plate})
+        exports.oxmysql:execute('UPDATE player_vehicles SET status = @status WHERE plate = @plate', {['@status'] = json.encode(VehicleStatus[plate]), ['@plate'] = plate})
     end
 end)
 
 function IsVehicleOwned(plate)
-    local result = exports.ghmattimysql:scalarSync('SELECT 1 from player_vehicles WHERE plate=@plate', {['@plate'] = plate})
+    local result = exports.oxmysql:scalarSync('SELECT 1 from player_vehicles WHERE plate=@plate', {['@plate'] = plate})
     if result then return true else return false end
 end
 
 function GetVehicleStatus(plate)
     local retval = nil
-    local result = exports.ghmattimysql:executeSync('SELECT status FROM player_vehicles WHERE plate=@plate', {['@plate'] = plate})
+    local result = exports.oxmysql:fetchSync('SELECT status FROM player_vehicles WHERE plate=@plate', {['@plate'] = plate})
     if result[1] ~= nil then
         retval = result[1].status ~= nil and json.decode(result[1].status) or nil
     end

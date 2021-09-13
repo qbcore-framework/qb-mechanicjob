@@ -1,9 +1,8 @@
-ModdedVehicles = {}
-VehicleStatus = {}
-ClosestPlate = nil
-isLoggedIn = true
-PlayerJob = {}
-
+local ModdedVehicles = {}
+local VehicleStatus = {}
+local ClosestPlate = nil
+local isLoggedIn = true
+local PlayerJob = {}
 local onDuty = false
 
 function DrawText3Ds(x, y, z, text)

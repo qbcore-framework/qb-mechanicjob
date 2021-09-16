@@ -1,5 +1,5 @@
 local ModdedVehicles = {}
-local VehicleStatus = {}
+VehicleStatus = {}
 local ClosestPlate = nil
 local isLoggedIn = true
 local PlayerJob = {}

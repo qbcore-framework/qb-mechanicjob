@@ -1,4 +1,4 @@
-local VehicleStatus = {}
+VehicleStatus = {}
 local VehicleDrivingDistance = {}
 
 QBCore.Functions.CreateCallback('qb-vehicletuning:server:GetDrivingDistances', function(source, cb)

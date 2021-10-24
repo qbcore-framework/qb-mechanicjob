@@ -57,7 +57,7 @@ RegisterServerEvent('qb-vehicletuning:server:UpdateDrivingDistance')
 AddEventHandler('qb-vehicletuning:server:UpdateDrivingDistance', function(amount, plate)
     VehicleDrivingDistance[plate] = amount
     TriggerClientEvent('qb-vehicletuning:client:UpdateDrivingDistance', -1, VehicleDrivingDistance[plate], plate)
-    local result = exports.oxmysql:fetchSync('SELECT plate FROM player_vehicles WHERE plate = ?', {plate})
+    local result = exports.oxmysql:executeSync('SELECT plate FROM player_vehicles WHERE plate = ?', {plate})
     if result[1] ~= nil then
         exports.oxmysql:execute('UPDATE player_vehicles SET drivingdistance = ? WHERE plate = ?', {amount, plate})
     end
@@ -137,7 +137,7 @@ end
 
 function GetVehicleStatus(plate)
     local retval = nil
-    local result = exports.oxmysql:fetchSync('SELECT status FROM player_vehicles WHERE plate = ?', {plate})
+    local result = exports.oxmysql:executeSync('SELECT status FROM player_vehicles WHERE plate = ?', {plate})
     if result[1] ~= nil then
         retval = result[1].status ~= nil and json.decode(result[1].status) or nil
     end

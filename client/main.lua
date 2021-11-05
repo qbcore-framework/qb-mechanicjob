@@ -1,7 +1,8 @@
+local QBCore = exports['qb-core']:GetCoreObject()
+
 local ModdedVehicles = {}
-local VehicleStatus = {}
+VehicleStatus = {}
 local ClosestPlate = nil
-local isLoggedIn = true
 local PlayerJob = {}
 local onDuty = false
 
@@ -22,7 +23,7 @@ end
 
 Citizen.CreateThread(function()
     while true do
-        if isLoggedIn then
+        if LocalPlayer.state.isLoggedIn then
             SetClosestPlate()
         end
         Citizen.Wait(1000)
@@ -57,7 +58,6 @@ AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
             end
         end
     end)
-    isLoggedIn = true
     QBCore.Functions.TriggerCallback('qb-vehicletuning:server:GetAttachedVehicle', function(plates)
         for k, v in pairs(plates) do
             Config.Plates[k].AttachedVehicle = v.AttachedVehicle
@@ -100,7 +100,7 @@ Citizen.CreateThread(function()
     while true do
         local inRange = false
 
-        if isLoggedIn then
+        if LocalPlayer.state.isLoggedIn then
             if PlayerJob.name == "mechanic" then
                 local pos = GetEntityCoords(PlayerPedId())
                 local StashDistance = #(pos - Config.Locations["stash"])
@@ -228,15 +228,15 @@ end)
 function OpenMenu()
     ClearMenu()
     Menu.addButton("Options", "VehicleOptions", nil)
-    Menu.addButton("Close Menu", "CloseMenu", nil) 
+    Menu.addButton("Close Menu", "CloseMenu", nil)
 end
 
 function VehicleList()
     ClearMenu()
     for k, v in pairs(Config.Vehicles) do
-        Menu.addButton(v, "SpawnListVehicle", k) 
+        Menu.addButton(v, "SpawnListVehicle", k)
     end
-    Menu.addButton("Close Menu", "CloseMenu", nil) 
+    Menu.addButton("Close Menu", "CloseMenu", nil)
 end
 
 function SpawnListVehicle(model)
@@ -276,13 +276,13 @@ function PartsMenu()
                 if percentage > 100 then
                     percentage = math.ceil(VehicleStatus[plate][k]) / 10
                 end
-                Menu.addButton(v..": "..percentage.."%", "PartMenu", k) 
+                Menu.addButton(v..": "..percentage.."%", "PartMenu", k)
             else
                 local percentage = math.ceil(Config.MaxStatusValues[k])
                 if percentage > 100 then
                     percentage = math.ceil(Config.MaxStatusValues[k]) / 10
                 end
-                Menu.addButton(v..": "..percentage.."%", "NoDamage", nil) 
+                Menu.addButton(v..": "..percentage.."%", "NoDamage", nil)
             end
         end
     else
@@ -291,11 +291,11 @@ function PartsMenu()
             if percentage > 100 then
                 percentage = math.ceil(Config.MaxStatusValues[k]) / 10
             end
-            Menu.addButton(v..": "..percentage.."%", "NoDamage", nil) 
+            Menu.addButton(v..": "..percentage.."%", "NoDamage", nil)
         end
     end
-    Menu.addButton("Back", "VehicleOptions", nil) 
-    Menu.addButton("Close Menu", "CloseMenu", nil) 
+    Menu.addButton("Back", "VehicleOptions", nil)
+    Menu.addButton("Close Menu", "CloseMenu", nil)
 end
 
 function CheckStatus()
@@ -307,14 +307,14 @@ function PartMenu(part)
     ClearMenu()
     Menu.addButton("Repair ("..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." "..Config.RepairCostAmount[part].costs.."x)", "RepairPart", part)
     Menu.addButton("Back", "VehicleOptions", nil)
-    Menu.addButton("Close Menu", "CloseMenu", nil) 
+    Menu.addButton("Close Menu", "CloseMenu", nil)
 end
 
 function NoDamage(part)
     ClearMenu()
     Menu.addButton("There Is No Damage To This Part!", "PartsMenu", part)
     Menu.addButton("Back", "VehicleOptions", nil)
-    Menu.addButton("Close Menu", "CloseMenu", nil) 
+    Menu.addButton("Close Menu", "CloseMenu", nil)
 end
 
 function RepairPart(part)
@@ -408,7 +408,7 @@ AddEventHandler('qb-vehicletuning:client:SetAttachedVehicle', function(veh, key)
 end)
 
 Citizen.CreateThread(function()
-    while true do 
+    while true do
         Citizen.Wait(1)
         if (IsPedInAnyVehicle(PlayerPedId(), false)) then
             local veh = GetVehiclePedIsIn(PlayerPedId(),false)
@@ -426,7 +426,7 @@ Citizen.CreateThread(function()
 
                     fTractionCurveMin = fTractionCurveMin * 0.6
                     SetVehicleHandlingFloat(veh, 'CHandlingData', 'fTractionCurveMin', fTractionCurveMin)
-                    SetVehicleHandlingField(veh, 'CHandlingData', 'fTractionCurveMin', fTractionCurveMin)   
+                    SetVehicleHandlingField(veh, 'CHandlingData', 'fTractionCurveMin', fTractionCurveMin)
 
                     -- local fTractionCurveMax = GetVehicleHandlingFloat(veh, 'CHandlingData', 'fTractionCurveMax')
                     -- fTractionCurveMax = fTractionCurveMax * 0.6
@@ -440,7 +440,7 @@ Citizen.CreateThread(function()
                     local fBrakeForce = GetVehicleHandlingFloat(veh, 'CHandlingData', 'fBrakeForce')
                     fBrakeForce = fBrakeForce * 1.4
                     SetVehicleHandlingFloat(veh, 'CHandlingData', 'fBrakeForce', fBrakeForce)
-                    
+
                     SetVehicleHandlingFloat(veh, 'CHandlingData', 'fSuspensionReboundDamp', 5.000000)
                     SetVehicleHandlingField(veh, 'CHandlingData', 'fSuspensionReboundDamp', 5.000000)
 
@@ -465,7 +465,7 @@ Citizen.CreateThread(function()
                         fInitialDriveForce = fInitialDriveForce * 0.9
                         SetVehicleHandlingFloat(veh, 'CHandlingData', 'fInitialDriveForce', fInitialDriveForce)
                     end
-                                
+
                     local fInitialDragCoeff = GetVehicleHandlingFloat(veh, 'CHandlingData', 'fInitialDragCoeff')
                     fInitialDragCoeff = fInitialDragCoeff * 0.3
                     SetVehicleHandlingFloat(veh, 'CHandlingData', 'fInitialDragCoeff', fInitialDragCoeff)
@@ -476,11 +476,11 @@ Citizen.CreateThread(function()
                 end
                 SetVehicleHandlingFloat(veh, 'CHandlingData', 'fDeformationDamageMult', 1.000000)
                 SetVehicleHasBeenOwnedByPlayer(veh,true)
-                ModdedVehicles[tostring(veh)] = { 
-                    ["fInitialDriveMaxFlatVel"] = fInitialDriveMaxFlatVel, 
-                    ["fSteeringLock"] = GetVehicleHandlingFloat(veh, 'CHandlingData', 'fSteeringLock'), 
-                    ["fTractionLossMult"] = GetVehicleHandlingFloat(veh, 'CHandlingData', 'fTractionLossMult'), 
-                    ["fLowSpeedTractionLossMult"] = GetVehicleHandlingFloat(veh, 'CHandlingData', 'fLowSpeedTractionLossMult') 
+                ModdedVehicles[tostring(veh)] = {
+                    ["fInitialDriveMaxFlatVel"] = fInitialDriveMaxFlatVel,
+                    ["fSteeringLock"] = GetVehicleHandlingFloat(veh, 'CHandlingData', 'fSteeringLock'),
+                    ["fTractionLossMult"] = GetVehicleHandlingFloat(veh, 'CHandlingData', 'fTractionLossMult'),
+                    ["fLowSpeedTractionLossMult"] = GetVehicleHandlingFloat(veh, 'CHandlingData', 'fLowSpeedTractionLossMult')
                 }
             else
                 Citizen.Wait(1000)
@@ -492,7 +492,7 @@ Citizen.CreateThread(function()
 end)
 local effectTimer = 0
 Citizen.CreateThread(function()
-    while true do 
+    while true do
         Citizen.Wait(1000)
         if (IsPedInAnyVehicle(PlayerPedId(), false)) then
             local veh = GetVehiclePedIsIn(PlayerPedId(),false)
@@ -500,7 +500,7 @@ Citizen.CreateThread(function()
                 local engineHealth = GetVehicleEngineHealth(veh)
                 local bodyHealth = GetVehicleBodyHealth(veh)
                 local plate = GetVehicleNumberPlateText(veh)
-                if VehicleStatus[plate] == nil then 
+                if VehicleStatus[plate] == nil then
                     TriggerServerEvent("vehiclemod:server:setupVehicleStatus", plate, engineHealth, bodyHealth)
                 else
                     TriggerServerEvent("vehiclemod:server:updatePart", plate, "engine", engineHealth)
@@ -537,7 +537,7 @@ AddEventHandler('vehiclemod:client:getVehicleStatus', function(plate, status)
             if #(pos - vehpos) < 5.0 then
                 if not IsThisModelABicycle(GetEntityModel(veh)) then
                     local plate = GetVehicleNumberPlateText(veh)
-                    if VehicleStatus[plate] ~= nil then 
+                    if VehicleStatus[plate] ~= nil then
                         SendStatusMessage(VehicleStatus[plate])
                     else
                         QBCore.Functions.Notify("Status Unknown", "error")
@@ -689,7 +689,7 @@ end
 function ApplyEffects(vehicle)
     local plate = GetVehicleNumberPlateText(vehicle)
     if GetVehicleClass(vehicle) ~= 13 and GetVehicleClass(vehicle) ~= 21 and GetVehicleClass(vehicle) ~= 16 and GetVehicleClass(vehicle) ~= 15 and GetVehicleClass(vehicle) ~= 14 then
-        if VehicleStatus[plate] ~= nil then 
+        if VehicleStatus[plate] ~= nil then
             local chance = math.random(1, 100)
             if VehicleStatus[plate]["radiator"] <= 80 and (chance >= 1 and chance <= 20) then
                 local engineHealth = GetVehicleEngineHealth(vehicle)
@@ -708,12 +708,12 @@ function ApplyEffects(vehicle)
 
             if VehicleStatus[plate]["axle"] <= 80 and (chance >= 21 and chance <= 40) then
                 if VehicleStatus[plate]["axle"] <= 80 and VehicleStatus[plate]["axle"] >= 60 then
-                    for i=0,360 do					
+                    for i=0,360 do
                         SetVehicleSteeringScale(vehicle,i)
                         Citizen.Wait(5)
                     end
                 elseif VehicleStatus[plate]["axle"] <= 59 and VehicleStatus[plate]["axle"] >= 40 then
-                    for i=0,360 do	
+                    for i=0,360 do
                         Citizen.Wait(10)
                         SetVehicleSteeringScale(vehicle,i)
                     end
@@ -855,7 +855,7 @@ end
 
 function GetVehicleStatusList(plate)
     local retval = nil
-    if VehicleStatus[plate] ~= nil then 
+    if VehicleStatus[plate] ~= nil then
         retval = VehicleStatus[plate]
     end
     return retval
@@ -863,7 +863,7 @@ end
 
 function GetVehicleStatus(plate, part)
     local retval = nil
-    if VehicleStatus[plate] ~= nil then 
+    if VehicleStatus[plate] ~= nil then
         retval = VehicleStatus[plate][part]
     end
     return retval
@@ -874,7 +874,7 @@ function SetVehicleStatus(plate, part, level)
 end
 
 function SendStatusMessage(statusList)
-    if statusList ~= nil then 
+    if statusList ~= nil then
         TriggerEvent('chat:addMessage', {
             template = '<div class="chat-message normal"><div class="chat-message-body"><strong>{0}:</strong><br><br> <strong>'.. Config.ValuesLabels["engine"] ..' (engine):</strong> {1} <br><strong>'.. Config.ValuesLabels["body"] ..' (body):</strong> {2} <br><strong>'.. Config.ValuesLabels["radiator"] ..' (radiator):</strong> {3} <br><strong>'.. Config.ValuesLabels["axle"] ..' (axle):</strong> {4}<br><strong>'.. Config.ValuesLabels["brakes"] ..' (brakes):</strong> {5}<br><strong>'.. Config.ValuesLabels["clutch"] ..' (clutch):</strong> {6}<br><strong>'.. Config.ValuesLabels["fuel"] ..' (fuel):</strong> {7}</div></div>',
             args = {'Vehicle Status', round(statusList["engine"]) .. "/" .. Config.MaxStatusValues["engine"] .. " ("..QBCore.Shared.Items["advancedrepairkit"]["label"]..")", round(statusList["body"]) .. "/" .. Config.MaxStatusValues["body"] .. " ("..QBCore.Shared.Items[Config.RepairCost["body"]]["label"]..")", round(statusList["radiator"]) .. "/" .. Config.MaxStatusValues["radiator"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["radiator"]]["label"]..")", round(statusList["axle"]) .. "/" .. Config.MaxStatusValues["axle"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["axle"]]["label"]..")", round(statusList["brakes"]) .. "/" .. Config.MaxStatusValues["brakes"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["brakes"]]["label"]..")", round(statusList["clutch"]) .. "/" .. Config.MaxStatusValues["clutch"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["clutch"]]["label"]..")", round(statusList["fuel"]) .. "/" .. Config.MaxStatusValues["fuel"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["fuel"]]["label"]..")"}

@@ -1,3 +1,5 @@
+local QBCore = exports['qb-core']:GetCoreObject()
+
 local vehiclemeters = -1
 local previousvehiclepos = nil
 local CheckDone = false
@@ -27,7 +29,6 @@ Citizen.CreateThread(function()
             local veh = GetVehiclePedIsIn(ped)
             local seat = GetPedInVehicleSeat(veh, -1)
             local pos = GetEntityCoords(ped)
-            local vehclass = GetVehicleClass(GetVehiclePedIsIn(ped))
             local plate = GetVehicleNumberPlateText(veh)
 
             if plate ~= nil then
@@ -141,7 +142,7 @@ function round(num, numDecimalPlaces)
     end
     return math.floor(num + 0.5)
 end
- 
+
 RegisterNetEvent('qb-vehicletuning:client:UpdateDrivingDistance')
 AddEventHandler('qb-vehicletuning:client:UpdateDrivingDistance', function(amount, plate)
     DrivingDistance[plate] = amount

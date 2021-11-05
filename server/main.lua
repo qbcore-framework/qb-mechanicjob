@@ -1,3 +1,5 @@
+local QBCore = exports['qb-core']:GetCoreObject()
+
 local VehicleStatus = {}
 local VehicleDrivingDistance = {}
 
@@ -7,7 +9,6 @@ end)
 
 RegisterServerEvent('qb-vehicletuning:server:SaveVehicleProps')
 AddEventHandler('qb-vehicletuning:server:SaveVehicleProps', function(vehicleProps)
-    local src = source
     if IsVehicleOwned(vehicleProps.plate) then
         exports.oxmysql:execute('UPDATE player_vehicles SET mods = ? WHERE plate = ?',
             {json.encode(vehicleProps), vehicleProps.plate})
@@ -16,9 +17,8 @@ end)
 
 RegisterServerEvent("vehiclemod:server:setupVehicleStatus")
 AddEventHandler("vehiclemod:server:setupVehicleStatus", function(plate, engineHealth, bodyHealth)
-    local src = source
-    local engineHealth = engineHealth ~= nil and engineHealth or 1000.0
-    local bodyHealth = bodyHealth ~= nil and bodyHealth or 1000.0
+    engineHealth = engineHealth ~= nil and engineHealth or 1000.0
+    bodyHealth = bodyHealth ~= nil and bodyHealth or 1000.0
     if VehicleStatus[plate] == nil then
         if IsVehicleOwned(plate) then
             local statusInfo = GetVehicleStatus(plate)

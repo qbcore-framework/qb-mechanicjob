@@ -253,7 +253,7 @@ function SpawnListVehicle(model)
         exports['LegacyFuel']:SetFuel(veh, 100.0)
         Menu.hidden = true
         TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
-        TriggerEvent("vehiclekeys:client:SetOwner", GetVehicleNumberPlateText(veh))
+        TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(veh))
         SetVehicleEngineOn(veh, true, true)
     end, coords, true)
 end
@@ -268,7 +268,7 @@ end
 
 function PartsMenu()
     ClearMenu()
-    local plate = GetVehicleNumberPlateText(Config.Plates[ClosestPlate].AttachedVehicle)
+    local plate = QBCore.Functions.GetPlate(Config.Plates[ClosestPlate].AttachedVehicle)
     if VehicleStatus[plate] ~= nil then
         for k, v in pairs(Config.ValuesLabels) do
             if math.ceil(VehicleStatus[plate][k]) ~= Config.MaxStatusValues[k] then
@@ -299,7 +299,7 @@ function PartsMenu()
 end
 
 function CheckStatus()
-    local plate = GetVehicleNumberPlateText(Config.Plates[ClosestPlate].AttachedVehicle)
+    local plate = QBCore.Functions.GetPlate(Config.Plates[ClosestPlate].AttachedVehicle)
     SendStatusMessage(VehicleStatus[plate])
 end
 
@@ -318,7 +318,7 @@ function NoDamage(part)
 end
 
 function RepairPart(part)
-    local plate = GetVehicleNumberPlateText(Config.Plates[ClosestPlate].AttachedVehicle)
+    local plate = QBCore.Functions.GetPlate(Config.Plates[ClosestPlate].AttachedVehicle)
     local PartData = Config.RepairCostAmount[part]
     local hasitem = false
     local indx = 0
@@ -368,7 +368,7 @@ end
 RegisterNetEvent('qb-vehicletuning:client:RepaireeePart')
 AddEventHandler('qb-vehicletuning:client:RepaireeePart', function(part)
     local veh = Config.Plates[ClosestPlate].AttachedVehicle
-    local plate = GetVehicleNumberPlateText(veh)
+    local plate = QBCore.Functions.GetPlate(veh)
     if part == "engine" then
         SetVehicleEngineHealth(veh, Config.MaxStatusValues[part])
         TriggerServerEvent("vehiclemod:server:updatePart", plate, "engine", Config.MaxStatusValues[part])
@@ -499,7 +499,7 @@ Citizen.CreateThread(function()
             if not IsThisModelABicycle(GetEntityModel(veh)) and GetPedInVehicleSeat(veh, -1) == PlayerPedId() then
                 local engineHealth = GetVehicleEngineHealth(veh)
                 local bodyHealth = GetVehicleBodyHealth(veh)
-                local plate = GetVehicleNumberPlateText(veh)
+                local plate = QBCore.Functions.GetPlate(veh)
                 if VehicleStatus[plate] == nil then
                     TriggerServerEvent("vehiclemod:server:setupVehicleStatus", plate, engineHealth, bodyHealth)
                 else
@@ -536,7 +536,7 @@ AddEventHandler('vehiclemod:client:getVehicleStatus', function(plate, status)
             local pos = GetEntityCoords(PlayerPedId())
             if #(pos - vehpos) < 5.0 then
                 if not IsThisModelABicycle(GetEntityModel(veh)) then
-                    local plate = GetVehicleNumberPlateText(veh)
+                    local plate = QBCore.Functions.GetPlate(veh)
                     if VehicleStatus[plate] ~= nil then
                         SendStatusMessage(VehicleStatus[plate])
                     else
@@ -561,7 +561,7 @@ AddEventHandler('vehiclemod:client:fixEverything', function()
     if (IsPedInAnyVehicle(PlayerPedId(), false)) then
         local veh = GetVehiclePedIsIn(PlayerPedId(),false)
         if not IsThisModelABicycle(GetEntityModel(veh)) and GetPedInVehicleSeat(veh, -1) == PlayerPedId() then
-            local plate = GetVehicleNumberPlateText(veh)
+            local plate = QBCore.Functions.GetPlate(veh)
             TriggerServerEvent("vehiclemod:server:fixEverything", plate)
         else
             QBCore.Functions.Notify("You Are Not The Driver Or On A Bicycle", "error")
@@ -576,7 +576,7 @@ AddEventHandler('vehiclemod:client:setPartLevel', function(part, level)
     if (IsPedInAnyVehicle(PlayerPedId(), false)) then
         local veh = GetVehiclePedIsIn(PlayerPedId(),false)
         if not IsThisModelABicycle(GetEntityModel(veh)) and GetPedInVehicleSeat(veh, -1) == PlayerPedId() then
-            local plate = GetVehicleNumberPlateText(veh)
+            local plate = QBCore.Functions.GetPlate(veh)
             if part == "engine" then
                 SetVehicleEngineHealth(veh, level)
                 TriggerServerEvent("vehiclemod:server:updatePart", plate, "engine", GetVehicleEngineHealth(veh))
@@ -605,7 +605,7 @@ AddEventHandler('vehiclemod:client:repairPart', function(part, level, needAmount
                 local pos = GetEntityCoords(PlayerPedId())
                 if #(pos - vehpos) < 5.0 then
                     if not IsThisModelABicycle(GetEntityModel(veh)) then
-                        local plate = GetVehicleNumberPlateText(veh)
+                        local plate = QBCore.Functions.GetPlate(veh)
                         if VehicleStatus[plate] ~= nil and VehicleStatus[plate][part] ~= nil then
                             local lockpickTime = (1000 * level)
                             if part == "body" then
@@ -687,7 +687,7 @@ function CanReapair()
 end
 
 function ApplyEffects(vehicle)
-    local plate = GetVehicleNumberPlateText(vehicle)
+    local plate = QBCore.Functions.GetPlate(vehicle)
     if GetVehicleClass(vehicle) ~= 13 and GetVehicleClass(vehicle) ~= 21 and GetVehicleClass(vehicle) ~= 16 and GetVehicleClass(vehicle) ~= 15 and GetVehicleClass(vehicle) ~= 14 then
         if VehicleStatus[plate] ~= nil then
             local chance = math.random(1, 100)

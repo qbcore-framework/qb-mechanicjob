@@ -29,7 +29,7 @@ Citizen.CreateThread(function()
             local veh = GetVehiclePedIsIn(ped)
             local seat = GetPedInVehicleSeat(veh, -1)
             local pos = GetEntityCoords(ped)
-            local plate = GetVehicleNumberPlateText(veh)
+            local plate = QBCore.Functions.GetPlate(veh)
 
             if plate ~= nil then
                 if seat == ped then

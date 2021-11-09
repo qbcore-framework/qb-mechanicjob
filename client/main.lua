@@ -21,12 +21,12 @@ function DrawText3Ds(x, y, z, text)
     ClearDrawOrigin()
 end
 
-Citizen.CreateThread(function()
+CreateThread(function()
     while true do
         if LocalPlayer.state.isLoggedIn then
             SetClosestPlate()
         end
-        Citizen.Wait(1000)
+        Wait(1000)
     end
 end)
 
@@ -48,8 +48,7 @@ function SetClosestPlate()
     ClosestPlate = current
 end
 
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
-AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     QBCore.Functions.GetPlayerData(function(PlayerData)
         PlayerJob = PlayerData.job
         if PlayerData.job.onduty then
@@ -69,18 +68,16 @@ AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
     end)
 end)
 
-RegisterNetEvent('QBCore:Client:OnJobUpdate')
-AddEventHandler('QBCore:Client:OnJobUpdate', function(JobInfo)
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
     PlayerJob = JobInfo
     onDuty = PlayerJob.onduty
 end)
 
-RegisterNetEvent('QBCore:Client:SetDuty')
-AddEventHandler('QBCore:Client:SetDuty', function(duty)
+RegisterNetEvent('QBCore:Client:SetDuty', function(duty)
     onDuty = duty
 end)
 
-Citizen.CreateThread(function()
+CreateThread(function()
     local c = Config.Locations["exit"]
     local Blip = AddBlipForCoord(c.x, c.y, c.z)
 
@@ -90,13 +87,12 @@ Citizen.CreateThread(function()
     SetBlipAsShortRange(Blip, true)
     SetBlipColour(Blip, 0)
     SetBlipAlpha(Blip, 0.7)
-
     BeginTextCommandSetBlipName("STRING")
     AddTextComponentSubstringPlayerName("Autocare Mechanic")
     EndTextCommandSetBlipName(Blip)
 end)
 
-Citizen.CreateThread(function()
+CreateThread(function()
     while true do
         local inRange = false
 
@@ -212,16 +208,16 @@ Citizen.CreateThread(function()
                 end
 
                 if not inRange then
-                    Citizen.Wait(1500)
+                    Wait(1500)
                 end
             else
-                Citizen.Wait(1500)
+                Wait(1500)
             end
         else
-            Citizen.Wait(1500)
+            Wait(1500)
         end
 
-        Citizen.Wait(3)
+        Wait(3)
     end
 end)
 
@@ -363,10 +359,7 @@ function RepairPart(part)
     end, "mechanicstash")
 end
 
---
-
-RegisterNetEvent('qb-vehicletuning:client:RepaireeePart')
-AddEventHandler('qb-vehicletuning:client:RepaireeePart', function(part)
+RegisterNetEvent('qb-vehicletuning:client:RepaireeePart', function(part)
     local veh = Config.Plates[ClosestPlate].AttachedVehicle
     local plate = QBCore.Functions.GetPlate(veh)
     if part == "engine" then
@@ -398,8 +391,7 @@ function UnattachVehicle()
     TriggerServerEvent('qb-vehicletuning:server:SetAttachedVehicle', false, ClosestPlate)
 end
 
-RegisterNetEvent('qb-vehicletuning:client:SetAttachedVehicle')
-AddEventHandler('qb-vehicletuning:client:SetAttachedVehicle', function(veh, key)
+RegisterNetEvent('qb-vehicletuning:client:SetAttachedVehicle', function(veh, key)
     if veh ~= false then
         Config.Plates[key].AttachedVehicle = veh
     else
@@ -407,9 +399,9 @@ AddEventHandler('qb-vehicletuning:client:SetAttachedVehicle', function(veh, key)
     end
 end)
 
-Citizen.CreateThread(function()
+CreateThread(function()
     while true do
-        Citizen.Wait(1)
+        Wait(1)
         if (IsPedInAnyVehicle(PlayerPedId(), false)) then
             local veh = GetVehiclePedIsIn(PlayerPedId(),false)
             if ModdedVehicles[tostring(veh)] == nil and not IsThisModelABicycle(GetEntityModel(veh)) then
@@ -483,17 +475,19 @@ Citizen.CreateThread(function()
                     ["fLowSpeedTractionLossMult"] = GetVehicleHandlingFloat(veh, 'CHandlingData', 'fLowSpeedTractionLossMult')
                 }
             else
-                Citizen.Wait(1000)
+                Wait(1000)
             end
         else
-            Citizen.Wait(2000)
+            Wait(2000)
         end
     end
 end)
+
 local effectTimer = 0
-Citizen.CreateThread(function()
+
+CreateThread(function()
     while true do
-        Citizen.Wait(1000)
+        Wait(1000)
         if (IsPedInAnyVehicle(PlayerPedId(), false)) then
             local veh = GetVehiclePedIsIn(PlayerPedId(),false)
             if not IsThisModelABicycle(GetEntityModel(veh)) and GetPedInVehicleSeat(veh, -1) == PlayerPedId() then
@@ -513,22 +507,20 @@ Citizen.CreateThread(function()
                 end
             else
                 effectTimer = 0
-                Citizen.Wait(1000)
+                Wait(1000)
             end
         else
             effectTimer = 0
-            Citizen.Wait(2000)
+            Wait(2000)
         end
     end
 end)
 
-RegisterNetEvent('vehiclemod:client:setVehicleStatus')
-AddEventHandler('vehiclemod:client:setVehicleStatus', function(plate, status)
+RegisterNetEvent('vehiclemod:client:setVehicleStatus', function(plate, status)
     VehicleStatus[plate] = status
 end)
 
-RegisterNetEvent('vehiclemod:client:getVehicleStatus')
-AddEventHandler('vehiclemod:client:getVehicleStatus', function(plate, status)
+RegisterNetEvent('vehiclemod:client:getVehicleStatus', function(plate, status)
     if not (IsPedInAnyVehicle(PlayerPedId(), false)) then
         local veh = GetVehiclePedIsIn(PlayerPedId(), true)
         if veh ~= nil and veh ~= 0 then
@@ -556,8 +548,7 @@ AddEventHandler('vehiclemod:client:getVehicleStatus', function(plate, status)
     end
 end)
 
-RegisterNetEvent('vehiclemod:client:fixEverything')
-AddEventHandler('vehiclemod:client:fixEverything', function()
+RegisterNetEvent('vehiclemod:client:fixEverything', function()
     if (IsPedInAnyVehicle(PlayerPedId(), false)) then
         local veh = GetVehiclePedIsIn(PlayerPedId(),false)
         if not IsThisModelABicycle(GetEntityModel(veh)) and GetPedInVehicleSeat(veh, -1) == PlayerPedId() then
@@ -571,8 +562,7 @@ AddEventHandler('vehiclemod:client:fixEverything', function()
     end
 end)
 
-RegisterNetEvent('vehiclemod:client:setPartLevel')
-AddEventHandler('vehiclemod:client:setPartLevel', function(part, level)
+RegisterNetEvent('vehiclemod:client:setPartLevel', function(part, level)
     if (IsPedInAnyVehicle(PlayerPedId(), false)) then
         local veh = GetVehiclePedIsIn(PlayerPedId(),false)
         if not IsThisModelABicycle(GetEntityModel(veh)) and GetPedInVehicleSeat(veh, -1) == PlayerPedId() then
@@ -595,8 +585,7 @@ AddEventHandler('vehiclemod:client:setPartLevel', function(part, level)
 end)
 local openingDoor = false
 
-RegisterNetEvent('vehiclemod:client:repairPart')
-AddEventHandler('vehiclemod:client:repairPart', function(part, level, needAmount)
+RegisterNetEvent('vehiclemod:client:repairPart', function(part, level, needAmount)
     -- if CanReapair() then
         if not IsPedInAnyVehicle(PlayerPedId(), false) then
             local veh = GetVehiclePedIsIn(PlayerPedId(), true)
@@ -665,10 +654,10 @@ function ScrapAnim(time)
     loadAnimDict("mp_car_bomb")
     TaskPlayAnim(PlayerPedId(), "mp_car_bomb", "car_bomb_mechanic" ,3.0, 3.0, -1, 16, 0, false, false, false)
     openingDoor = true
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while openingDoor do
             TaskPlayAnim(PlayerPedId(), "mp_car_bomb", "car_bomb_mechanic", 3.0, 3.0, -1, 16, 0, 0, 0, 0)
-            Citizen.Wait(2000)
+            Wait(2000)
             time = time - 2
             if time <= 0 then
                 openingDoor = false
@@ -710,26 +699,26 @@ function ApplyEffects(vehicle)
                 if VehicleStatus[plate]["axle"] <= 80 and VehicleStatus[plate]["axle"] >= 60 then
                     for i=0,360 do
                         SetVehicleSteeringScale(vehicle,i)
-                        Citizen.Wait(5)
+                        Wait(5)
                     end
                 elseif VehicleStatus[plate]["axle"] <= 59 and VehicleStatus[plate]["axle"] >= 40 then
                     for i=0,360 do
-                        Citizen.Wait(10)
+                        Wait(10)
                         SetVehicleSteeringScale(vehicle,i)
                     end
                 elseif VehicleStatus[plate]["axle"] <= 39 and VehicleStatus[plate]["axle"] >= 20 then
                     for i=0,360 do
-                        Citizen.Wait(15)
+                        Wait(15)
                         SetVehicleSteeringScale(vehicle,i)
                     end
                 elseif VehicleStatus[plate]["axle"] <= 19 and VehicleStatus[plate]["axle"] >= 6 then
                     for i=0,360 do
-                        Citizen.Wait(20)
+                        Wait(20)
                         SetVehicleSteeringScale(vehicle,i)
                     end
                 else
                     for i=0,360 do
-                        Citizen.Wait(25)
+                        Wait(25)
                         SetVehicleSteeringScale(vehicle,i)
                     end
                 end
@@ -738,23 +727,23 @@ function ApplyEffects(vehicle)
             if VehicleStatus[plate]["brakes"] <= 80 and (chance >= 41 and chance <= 60) then
                 if VehicleStatus[plate]["brakes"] <= 80 and VehicleStatus[plate]["brakes"] >= 60 then
                     SetVehicleHandbrake(vehicle, true)
-                    Citizen.Wait(1000)
+                    Wait(1000)
                     SetVehicleHandbrake(vehicle, false)
                 elseif VehicleStatus[plate]["brakes"] <= 59 and VehicleStatus[plate]["brakes"] >= 40 then
                     SetVehicleHandbrake(vehicle, true)
-                    Citizen.Wait(3000)
+                    Wait(3000)
                     SetVehicleHandbrake(vehicle, false)
                 elseif VehicleStatus[plate]["brakes"] <= 39 and VehicleStatus[plate]["brakes"] >= 20 then
                     SetVehicleHandbrake(vehicle, true)
-                    Citizen.Wait(5000)
+                    Wait(5000)
                     SetVehicleHandbrake(vehicle, false)
                 elseif VehicleStatus[plate]["brakes"] <= 19 and VehicleStatus[plate]["brakes"] >= 6 then
                     SetVehicleHandbrake(vehicle, true)
-                    Citizen.Wait(7000)
+                    Wait(7000)
                     SetVehicleHandbrake(vehicle, false)
                 else
                     SetVehicleHandbrake(vehicle, true)
-                    Citizen.Wait(9000)
+                    Wait(9000)
                     SetVehicleHandbrake(vehicle, false)
                 end
             end
@@ -764,66 +753,66 @@ function ApplyEffects(vehicle)
                     SetVehicleHandbrake(vehicle, true)
                     SetVehicleEngineOn(vehicle,0,0,1)
                     SetVehicleUndriveable(vehicle,true)
-                    Citizen.Wait(50)
+                    Wait(50)
                     SetVehicleEngineOn(vehicle,1,0,1)
                     SetVehicleUndriveable(vehicle,false)
                     for i=1,360 do
                         SetVehicleSteeringScale(vehicle, i)
-                        Citizen.Wait(5)
+                        Wait(5)
                     end
-                    Citizen.Wait(500)
+                    Wait(500)
                     SetVehicleHandbrake(vehicle, false)
                 elseif VehicleStatus[plate]["clutch"] <= 59 and VehicleStatus[plate]["clutch"] >= 40 then
                     SetVehicleHandbrake(vehicle, true)
                     SetVehicleEngineOn(vehicle,0,0,1)
                     SetVehicleUndriveable(vehicle,true)
-                    Citizen.Wait(100)
+                    Wait(100)
                     SetVehicleEngineOn(vehicle,1,0,1)
                     SetVehicleUndriveable(vehicle,false)
                     for i=1,360 do
                         SetVehicleSteeringScale(vehicle, i)
-                        Citizen.Wait(5)
+                        Wait(5)
                     end
-                    Citizen.Wait(750)
+                    Wait(750)
                     SetVehicleHandbrake(vehicle, false)
                 elseif VehicleStatus[plate]["clutch"] <= 39 and VehicleStatus[plate]["clutch"] >= 20 then
                     SetVehicleHandbrake(vehicle, true)
                     SetVehicleEngineOn(vehicle,0,0,1)
                     SetVehicleUndriveable(vehicle,true)
-                    Citizen.Wait(150)
+                    Wait(150)
                     SetVehicleEngineOn(vehicle,1,0,1)
                     SetVehicleUndriveable(vehicle,false)
                     for i=1,360 do
                         SetVehicleSteeringScale(vehicle, i)
-                        Citizen.Wait(5)
+                        Wait(5)
                     end
-                    Citizen.Wait(1000)
+                    Wait(1000)
                     SetVehicleHandbrake(vehicle, false)
                 elseif VehicleStatus[plate]["clutch"] <= 19 and VehicleStatus[plate]["clutch"] >= 6 then
                     SetVehicleHandbrake(vehicle, true)
                     SetVehicleEngineOn(vehicle,0,0,1)
                     SetVehicleUndriveable(vehicle,true)
-                    Citizen.Wait(200)
+                    Wait(200)
                     SetVehicleEngineOn(vehicle,1,0,1)
                     SetVehicleUndriveable(vehicle,false)
                     for i=1,360 do
                         SetVehicleSteeringScale(vehicle, i)
-                        Citizen.Wait(5)
+                        Wait(5)
                     end
-                    Citizen.Wait(1250)
+                    Wait(1250)
                     SetVehicleHandbrake(vehicle, false)
                 else
                     SetVehicleHandbrake(vehicle, true)
                     SetVehicleEngineOn(vehicle,0,0,1)
                     SetVehicleUndriveable(vehicle,true)
-                    Citizen.Wait(250)
+                    Wait(250)
                     SetVehicleEngineOn(vehicle,1,0,1)
                     SetVehicleUndriveable(vehicle,false)
                     for i=1,360 do
                         SetVehicleSteeringScale(vehicle, i)
-                        Citizen.Wait(5)
+                        Wait(5)
                     end
-                    Citizen.Wait(1500)
+                    Wait(1500)
                     SetVehicleHandbrake(vehicle, false)
                 end
             end
@@ -849,7 +838,7 @@ end
 function loadAnimDict(dict)
     while (not HasAnimDictLoaded(dict)) do
         RequestAnimDict(dict)
-        Citizen.Wait(5)
+        Wait(5)
     end
 end
 

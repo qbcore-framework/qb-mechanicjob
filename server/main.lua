@@ -7,16 +7,14 @@ QBCore.Functions.CreateCallback('qb-vehicletuning:server:GetDrivingDistances', f
     cb(VehicleDrivingDistance)
 end)
 
-RegisterServerEvent('qb-vehicletuning:server:SaveVehicleProps')
-AddEventHandler('qb-vehicletuning:server:SaveVehicleProps', function(vehicleProps)
+RegisterNetEvent('qb-vehicletuning:server:SaveVehicleProps', function(vehicleProps)
     if IsVehicleOwned(vehicleProps.plate) then
         exports.oxmysql:execute('UPDATE player_vehicles SET mods = ? WHERE plate = ?',
             {json.encode(vehicleProps), vehicleProps.plate})
     end
 end)
 
-RegisterServerEvent("vehiclemod:server:setupVehicleStatus")
-AddEventHandler("vehiclemod:server:setupVehicleStatus", function(plate, engineHealth, bodyHealth)
+RegisterNetEvent('vehiclemod:server:setupVehicleStatus', function(plate, engineHealth, bodyHealth)
     engineHealth = engineHealth ~= nil and engineHealth or 1000.0
     bodyHealth = bodyHealth ~= nil and bodyHealth or 1000.0
     if VehicleStatus[plate] == nil then
@@ -53,8 +51,7 @@ AddEventHandler("vehiclemod:server:setupVehicleStatus", function(plate, engineHe
     end
 end)
 
-RegisterServerEvent('qb-vehicletuning:server:UpdateDrivingDistance')
-AddEventHandler('qb-vehicletuning:server:UpdateDrivingDistance', function(amount, plate)
+RegisterNetEvent('qb-vehicletuning:server:UpdateDrivingDistance', function(amount, plate)
     VehicleDrivingDistance[plate] = amount
     TriggerClientEvent('qb-vehicletuning:client:UpdateDrivingDistance', -1, VehicleDrivingDistance[plate], plate)
     local result = exports.oxmysql:executeSync('SELECT plate FROM player_vehicles WHERE plate = ?', {plate})
@@ -72,14 +69,12 @@ QBCore.Functions.CreateCallback('qb-vehicletuning:server:IsVehicleOwned', functi
     cb(retval)
 end)
 
-RegisterServerEvent('qb-vehicletuning:server:LoadStatus')
-AddEventHandler('qb-vehicletuning:server:LoadStatus', function(veh, plate)
+RegisterNetEvent('qb-vehicletuning:server:LoadStatus', function(veh, plate)
     VehicleStatus[plate] = veh
     TriggerClientEvent("vehiclemod:client:setVehicleStatus", -1, plate, veh)
 end)
 
-RegisterServerEvent("vehiclemod:server:updatePart")
-AddEventHandler("vehiclemod:server:updatePart", function(plate, part, level)
+RegisterNetEvent('vehiclemod:server:updatePart', function(plate, part, level)
     if VehicleStatus[plate] ~= nil then
         if part == "engine" or part == "body" then
             VehicleStatus[plate][part] = level
@@ -100,16 +95,14 @@ AddEventHandler("vehiclemod:server:updatePart", function(plate, part, level)
     end
 end)
 
-RegisterServerEvent('qb-vehicletuning:server:SetPartLevel')
-AddEventHandler('qb-vehicletuning:server:SetPartLevel', function(plate, part, level)
+RegisterNetEvent('qb-vehicletuning:server:SetPartLevel', function(plate, part, level)
     if VehicleStatus[plate] ~= nil then
         VehicleStatus[plate][part] = level
         TriggerClientEvent("vehiclemod:client:setVehicleStatus", -1, plate, VehicleStatus[plate])
     end
 end)
 
-RegisterServerEvent("vehiclemod:server:fixEverything")
-AddEventHandler("vehiclemod:server:fixEverything", function(plate)
+RegisterNetEvent('vehiclemod:server:fixEverything', function(plate)
     if VehicleStatus[plate] ~= nil then
         for k, v in pairs(Config.MaxStatusValues) do
             VehicleStatus[plate][k] = v
@@ -118,8 +111,7 @@ AddEventHandler("vehiclemod:server:fixEverything", function(plate)
     end
 end)
 
-RegisterServerEvent("vehiclemod:server:saveStatus")
-AddEventHandler("vehiclemod:server:saveStatus", function(plate)
+RegisterNetEvent('vehiclemod:server:saveStatus', function(plate)
     if VehicleStatus[plate] ~= nil then
         exports.oxmysql:execute('UPDATE player_vehicles SET status = ? WHERE plate = ?',
             {json.encode(VehicleStatus[plate]), plate})
@@ -173,8 +165,7 @@ QBCore.Functions.CreateCallback('qb-vehicletuning:server:IsMechanicAvailable', f
     cb(amount)
 end)
 
-RegisterServerEvent('qb-vehicletuning:server:SetAttachedVehicle')
-AddEventHandler('qb-vehicletuning:server:SetAttachedVehicle', function(veh, k)
+RegisterNetEvent('qb-vehicletuning:server:SetAttachedVehicle', function(veh, k)
     if veh ~= false then
         Config.Plates[k].AttachedVehicle = veh
         TriggerClientEvent('qb-vehicletuning:client:SetAttachedVehicle', -1, veh, k)
@@ -184,8 +175,7 @@ AddEventHandler('qb-vehicletuning:server:SetAttachedVehicle', function(veh, k)
     end
 end)
 
-RegisterServerEvent('qb-vehicletuning:server:CheckForItems')
-AddEventHandler('qb-vehicletuning:server:CheckForItems', function(part)
+RegisterNetEvent('qb-vehicletuning:server:CheckForItems', function(part)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     local RepairPart = Player.Functions.GetItemByName(Config.RepairCostAmount[part].item)
@@ -198,7 +188,7 @@ AddEventHandler('qb-vehicletuning:server:CheckForItems', function(part)
             for i = 1, Config.RepairCostAmount[part].costs, 1 do
                 TriggerClientEvent('inventory:client:ItemBox', src,
                     QBCore.Shared.Items[Config.RepairCostAmount[part].item], "remove")
-                Citizen.Wait(500)
+                Wait(500)
             end
         else
             TriggerClientEvent('QBCore:Notify', src,

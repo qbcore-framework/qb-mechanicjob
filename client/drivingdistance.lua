@@ -1,11 +1,19 @@
-local QBCore = exports['qb-core']:GetCoreObject()
-
 local vehiclemeters = -1
 local previousvehiclepos = nil
 local CheckDone = false
 DrivingDistance = {}
 
-function GetDamageMultiplier(meters)
+-- Functions
+
+local function round(num, numDecimalPlaces)
+    if numDecimalPlaces and numDecimalPlaces>0 then
+      local mult = 10^numDecimalPlaces
+      return math.floor(num * mult + 0.5) / mult
+    end
+    return math.floor(num + 0.5)
+end
+
+local function GetDamageMultiplier(meters)
     local check = round(meters / 1000, -2)
     local retval = nil
     for k, v in pairs(Config.MinimalMetersForDamage) do
@@ -20,6 +28,19 @@ function GetDamageMultiplier(meters)
     return retval
 end
 
+local function trim(plate)
+    if not plate then return nil end
+    return (string.gsub(plate, '^%s*(.-)%s*$', '%1'))
+end
+
+-- Events
+
+RegisterNetEvent('qb-vehicletuning:client:UpdateDrivingDistance', function(amount, plate)
+    DrivingDistance[plate] = amount
+end)
+
+-- Threads
+
 CreateThread(function()
     Wait(500)
     while true do
@@ -29,8 +50,7 @@ CreateThread(function()
             local veh = GetVehiclePedIsIn(ped)
             local seat = GetPedInVehicleSeat(veh, -1)
             local pos = GetEntityCoords(ped)
-            local plate = QBCore.Functions.GetPlate(veh)
-
+            local plate = trim(GetVehicleNumberPlateText(veh))
             if plate ~= nil then
                 if seat == ped then
                     if not CheckDone then
@@ -133,16 +153,4 @@ CreateThread(function()
             Wait(500)
         end
     end
-end)
-
-function round(num, numDecimalPlaces)
-    if numDecimalPlaces and numDecimalPlaces>0 then
-      local mult = 10^numDecimalPlaces
-      return math.floor(num * mult + 0.5) / mult
-    end
-    return math.floor(num + 0.5)
-end
-
-RegisterNetEvent('qb-vehicletuning:client:UpdateDrivingDistance', function(amount, plate)
-    DrivingDistance[plate] = amount
 end)

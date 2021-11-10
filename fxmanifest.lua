@@ -14,8 +14,4 @@ client_scripts {
 
 server_script 'server/main.lua'
 
-exports {
-	'GetVehicleStatusList',
-	'GetVehicleStatus',
-	'SetVehicleStatus'
-}
+lua54 'yes'

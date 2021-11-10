@@ -20,7 +20,7 @@ function GetDamageMultiplier(meters)
     return retval
 end
 
-Citizen.CreateThread(function()
+CreateThread(function()
     Wait(500)
     while true do
         local ped = PlayerPedId()
@@ -128,9 +128,9 @@ Citizen.CreateThread(function()
         end
 
         if invehicle then
-            Citizen.Wait(2000)
+            Wait(2000)
         else
-            Citizen.Wait(500)
+            Wait(500)
         end
     end
 end)
@@ -143,7 +143,6 @@ function round(num, numDecimalPlaces)
     return math.floor(num + 0.5)
 end
 
-RegisterNetEvent('qb-vehicletuning:client:UpdateDrivingDistance')
-AddEventHandler('qb-vehicletuning:client:UpdateDrivingDistance', function(amount, plate)
+RegisterNetEvent('qb-vehicletuning:client:UpdateDrivingDistance', function(amount, plate)
     DrivingDistance[plate] = amount
 end)

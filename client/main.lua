@@ -378,7 +378,10 @@ local function PartMenu(data)
             header = ""..partName.."",
             txt = "Repair : "..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." "..Config.RepairCostAmount[part].costs.."x", 
             params = {
-                event = "qb-mechanicjob:client:UnattachVehicle",
+                event = "qb-mechanicjob:client:RepairPart",
+                args = {
+                    part = part,
+                }
             }
         },
         {
@@ -494,32 +497,7 @@ local function CheckStatus()
     SendStatusMessage(VehicleStatus[plate])
 end
 
-RegisterNetEvent("qb-mechanicjob:client:UnattachVehicle",function(data)
-    UnattachVehicle()
-end)
-
-RegisterNetEvent("qb-mechanicjob:client:PartsMenu",function(data)
-    PartsMenu()
-end)
-
-RegisterNetEvent("qb-mechanicjob:client:PartMenu",function(data)
-    PartMenu(data)
-end)
-
-RegisterNetEvent("qb-mechanicjob:client:NoDamage",function(data)
-    NoDamage()
-end)
-
-RegisterNetEvent("qb-mechanicjob:client:CheckStatus",function(data)
-    CheckStatus()
-end)
-
-RegisterNetEvent("qb-mechanicjob:client:SpawnListVehicle",function(data)
-    local vehicleSpawnName=data.spawnName
-    SpawnListVehicle(vehicleSpawnName)
-end)
-
-function RepairPart(part)
+local function RepairPart(part)
     local PartData = Config.RepairCostAmount[part]
     local hasitem = false
     local indx = 0
@@ -563,7 +541,38 @@ function RepairPart(part)
     end, "mechanicstash")
 end
 
+
+
 -- Events
+RegisterNetEvent("qb-mechanicjob:client:UnattachVehicle",function(data)
+    UnattachVehicle()
+end)
+
+RegisterNetEvent("qb-mechanicjob:client:PartsMenu",function(data)
+    PartsMenu()
+end)
+
+RegisterNetEvent("qb-mechanicjob:client:PartMenu",function(data)
+    PartMenu(data)
+end)
+
+RegisterNetEvent("qb-mechanicjob:client:NoDamage",function(data)
+    NoDamage()
+end)
+
+RegisterNetEvent("qb-mechanicjob:client:CheckStatus",function(data)
+    CheckStatus()
+end)
+
+RegisterNetEvent("qb-mechanicjob:client:SpawnListVehicle",function(data)
+    local vehicleSpawnName=data.spawnName
+    SpawnListVehicle(vehicleSpawnName)
+end)
+
+RegisterNetEvent("qb-mechanicjob:client:RepairPart",function(data)
+    local partData = data.part
+    RepairPart(partData)
+end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     QBCore.Functions.GetPlayerData(function(PlayerData)
@@ -821,10 +830,8 @@ CreateThread(function()
                                 if IsControlJustPressed(0, 38) then
                                     if IsControlJustPressed(0, 38) then
                                         VehicleList()
-                                        Menu.hidden = not Menu.hidden
                                     end
                                 end
-                                Menu.renderGUI()
                             end
                         end
                     end
@@ -882,9 +889,7 @@ CreateThread(function()
                                 DrawText3Ds(v.coords.x, v.coords.y, v.coords.z, "[E] Open Menu")
                                 if IsControlJustPressed(0, 38) then
                                     OpenMenu()
-                                    Menu.hidden = not Menu.hidden
                                 end
-                                Menu.renderGUI()
                             end
                         end
                     end

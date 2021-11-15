@@ -383,7 +383,7 @@ local function PartMenu(data)
         },
         {
             header = "⬅ Back Menu",
-            txt = "This goes to a sub menu",
+            txt = "Back to parts menu",
             params = {
                 event = "qb-mechanicjob:client:PartsMenu",
             }

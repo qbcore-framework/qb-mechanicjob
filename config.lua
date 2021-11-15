@@ -27,42 +27,42 @@ Config.ValuesLabels = {
 }
 
 Config.RepairCost = {
-    ["body"] = "plastic",
-    ["radiator"] = "plastic",
-    ["axle"] = "steel",
-    ["brakes"] = "iron",
-    ["clutch"] = "aluminum",
+    ["body"] = "bodykit",
+    ["radiator"] = "radiator",
+    ["axle"] = "driveshaft",
+    ["brakes"] = "stock_brakes",
+    ["clutch"] = "clutch",
     ["fuel"] = "plastic",
 }
 
 Config.RepairCostAmount = {
     ["engine"] = {
-        item = "metalscrap",
-        costs = 2,
+        item = "engine",
+        costs = 1,
     },
     ["body"] = {
-        item = "plastic",
-        costs = 3,
+        item = "bodykit",
+        costs = 1,
     },
     ["radiator"] = {
-        item = "steel",
-        costs = 5,
+        item = "radiator",
+        costs = 1,
     },
     ["axle"] = {
-        item = "aluminum",
-        costs = 7,
+        item = "driveshaft",
+        costs = 1,
     },
     ["brakes"] = {
-        item = "copper",
-        costs = 5,
+        item = "stock_brakes",
+        costs = 4,
     },
     ["clutch"] = {
-        item = "copper",
-        costs = 6,
+        item = "clutch",
+        costs = 1,
     },
     ["fuel"] = {
         item = "plastic",
-        costs = 5,
+        costs = 10,
     },
 }
 

@@ -56,7 +56,7 @@ RegisterNetEvent('qb-vehicletuning:server:UpdateDrivingDistance', function(amoun
     TriggerClientEvent('qb-vehicletuning:client:UpdateDrivingDistance', -1, VehicleDrivingDistance[plate], plate)
     local result = MySQL.Sync.fetchAll('SELECT plate FROM player_vehicles WHERE plate = ?', {plate})
     if result[1] ~= nil then
-        MySQL.ASync.execute('UPDATE player_vehicles SET drivingdistance = ? WHERE plate = ?', {amount, plate})
+        MySQL.Async.execute('UPDATE player_vehicles SET drivingdistance = ? WHERE plate = ?', {amount, plate})
     end
 end)
 

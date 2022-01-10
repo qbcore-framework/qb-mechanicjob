@@ -9,7 +9,7 @@ end)
 
 RegisterNetEvent('qb-vehicletuning:server:SaveVehicleProps', function(vehicleProps)
     if IsVehicleOwned(vehicleProps.plate) then
-        exports.oxmysql:execute('UPDATE player_vehicles SET mods = ? WHERE plate = ?',
+        MySQL.Async.execute('UPDATE player_vehicles SET mods = ? WHERE plate = ?',
             {json.encode(vehicleProps), vehicleProps.plate})
     end
 end)
@@ -54,15 +54,15 @@ end)
 RegisterNetEvent('qb-vehicletuning:server:UpdateDrivingDistance', function(amount, plate)
     VehicleDrivingDistance[plate] = amount
     TriggerClientEvent('qb-vehicletuning:client:UpdateDrivingDistance', -1, VehicleDrivingDistance[plate], plate)
-    local result = exports.oxmysql:executeSync('SELECT plate FROM player_vehicles WHERE plate = ?', {plate})
+    local result = MySQL.Sync.fetchAll('SELECT plate FROM player_vehicles WHERE plate = ?', {plate})
     if result[1] ~= nil then
-        exports.oxmysql:execute('UPDATE player_vehicles SET drivingdistance = ? WHERE plate = ?', {amount, plate})
+        MySQL.Async.execute('UPDATE player_vehicles SET drivingdistance = ? WHERE plate = ?', {amount, plate})
     end
 end)
 
 QBCore.Functions.CreateCallback('qb-vehicletuning:server:IsVehicleOwned', function(source, cb, plate)
     local retval = false
-    local result = exports.oxmysql:scalarSync('SELECT 1 from player_vehicles WHERE plate = ?', {plate})
+    local result = MySQL.Sync.fetchScalar('SELECT 1 from player_vehicles WHERE plate = ?', {plate})
     if result then
         retval = true
     end
@@ -113,13 +113,13 @@ end)
 
 RegisterNetEvent('vehiclemod:server:saveStatus', function(plate)
     if VehicleStatus[plate] ~= nil then
-        exports.oxmysql:execute('UPDATE player_vehicles SET status = ? WHERE plate = ?',
+        MySQL.Async.execute('UPDATE player_vehicles SET status = ? WHERE plate = ?',
             {json.encode(VehicleStatus[plate]), plate})
     end
 end)
 
 function IsVehicleOwned(plate)
-    local result = exports.oxmysql:scalarSync('SELECT 1 from player_vehicles WHERE plate = ?', {plate})
+    local result = MySQL.Sync.fetchScalar('SELECT 1 from player_vehicles WHERE plate = ?', {plate})
     if result then
         return true
     else
@@ -129,7 +129,7 @@ end
 
 function GetVehicleStatus(plate)
     local retval = nil
-    local result = exports.oxmysql:executeSync('SELECT status FROM player_vehicles WHERE plate = ?', {plate})
+    local result = MySQL.Sync.fetchAll('SELECT status FROM player_vehicles WHERE plate = ?', {plate})
     if result[1] ~= nil then
         retval = result[1].status ~= nil and json.decode(result[1].status) or nil
     end

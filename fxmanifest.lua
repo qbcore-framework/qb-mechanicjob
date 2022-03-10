@@ -10,8 +10,8 @@ client_scripts {
 	'client/main.lua',
 	'client/drivingdistance.lua',
 	'@PolyZone/client.lua',
-    '@PolyZone/BoxZone.lua',
-    '@PolyZone/CircleZone.lua',
+	'@PolyZone/BoxZone.lua',
+	'@PolyZone/CircleZone.lua',
 }
 
 server_scripts {

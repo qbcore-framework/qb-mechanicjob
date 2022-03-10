@@ -986,50 +986,48 @@ CreateThread(function ()
 
     while true do
         local wait = 1000
-        if LocalPlayer.state.isLoggedIn then
-            if PlayerJob.name == "mechanic" and onDuty then
-                if isInsideGarageZone then
-                    wait = 0
-                    local inVehicle = IsPedInAnyVehicle(PlayerPedId())
-                    if IsControlJustPressed(0, 38) then
-                        if inVehicle then
-                            DeleteVehicle(GetVehiclePedIsIn(PlayerPedId()))
-                            exports['qb-core']:HideText()
-                        else
-                            VehicleList()
-                            exports['qb-core']:HideText()
-                        end
+        if PlayerJob.name == "mechanic" and onDuty then
+            if isInsideGarageZone then
+                wait = 0
+                local inVehicle = IsPedInAnyVehicle(PlayerPedId())
+                if IsControlJustPressed(0, 38) then
+                    if inVehicle then
+                        DeleteVehicle(GetVehiclePedIsIn(PlayerPedId()))
+                        exports['qb-core']:HideText()
+                    else
+                        VehicleList()
+                        exports['qb-core']:HideText()
                     end
                 end
-
-                if isInsideVehiclePlateZone then
-                    wait = 0
-                    local attachedVehicle = Config.Plates[ClosestPlate].AttachedVehicle
-                    local coords = Config.Plates[ClosestPlate].coords
-                    if attachedVehicle then
-                        if IsControlJustPressed(0, 38) then
-                            exports['qb-core']:HideText()
-                            OpenMenu()
-                        end
-                    else
-                        if IsControlJustPressed(0, 38) and IsPedInAnyVehicle(PlayerPedId()) then
-                            local veh = GetVehiclePedIsIn(PlayerPedId())
-                            DoScreenFadeOut(150)
-                            Wait(150)
-                            Config.Plates[ClosestPlate].AttachedVehicle = veh
-                            SetEntityCoords(veh, coords)
-                            SetEntityHeading(veh, coords.w)
-                            FreezeEntityPosition(veh, true)
-                            Wait(500)
-                            DoScreenFadeIn(150)
-                            TriggerServerEvent('qb-vehicletuning:server:SetAttachedVehicle', veh, ClosestPlate)
-                            
-                            DestroyVehiclePlateZone(ClosestPlate)
-                            RegisterVehiclePlateZone(ClosestPlate, Config.Plates[ClosestPlate])
-                        end
-                    end
-                end 
             end
+
+            if isInsideVehiclePlateZone then
+                wait = 0
+                local attachedVehicle = Config.Plates[ClosestPlate].AttachedVehicle
+                local coords = Config.Plates[ClosestPlate].coords
+                if attachedVehicle then
+                    if IsControlJustPressed(0, 38) then
+                        exports['qb-core']:HideText()
+                        OpenMenu()
+                    end
+                else
+                    if IsControlJustPressed(0, 38) and IsPedInAnyVehicle(PlayerPedId()) then
+                        local veh = GetVehiclePedIsIn(PlayerPedId())
+                        DoScreenFadeOut(150)
+                        Wait(150)
+                        Config.Plates[ClosestPlate].AttachedVehicle = veh
+                        SetEntityCoords(veh, coords)
+                        SetEntityHeading(veh, coords.w)
+                        FreezeEntityPosition(veh, true)
+                        Wait(500)
+                        DoScreenFadeIn(150)
+                        TriggerServerEvent('qb-vehicletuning:server:SetAttachedVehicle', veh, ClosestPlate)
+                        
+                        DestroyVehiclePlateZone(ClosestPlate)
+                        RegisterVehiclePlateZone(ClosestPlate, Config.Plates[ClosestPlate])
+                    end
+                end
+            end 
         end
         Wait(wait)
     end

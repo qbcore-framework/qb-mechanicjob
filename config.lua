@@ -9,8 +9,6 @@ Config.AttachedVehicle = nil
 
 Config.AuthorizedIds = {
     -- "insertcitizenidhere",
-    -- DELETE ME
-    "NZX46503"
 }
 
 Config.MaxStatusValues = {

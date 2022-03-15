@@ -8,6 +8,8 @@ local effectTimer = 0
 local openingDoor = false
 
 -- zone check
+local isInsideDutyZone = false
+local isInsideStashZone = false
 local isInsideGarageZone = false
 local isInsideVehiclePlateZone = false
 local plateZones = {}
@@ -46,7 +48,14 @@ exports('SetVehicleStatus', SetVehicleStatus)
 -- Functions
 
 local function DeleteTarget(id)
-    exports['qb-target']:RemoveZone(id)
+    if Config.UseTarget then
+        exports['qb-target']:RemoveZone(id)
+    else
+        if Config.Targets[id] and Config.Targets[id].zone then
+            Config.Targets[id].zone:destroy();
+        end
+    end
+    
     Config.Targets[id] = nil
 end
 
@@ -67,22 +76,43 @@ local function RegisterDutyTarget()
         label = "Sign Off Duty"
     end
 
-    exports['qb-target']:AddBoxZone(dutyTargetBoxID, coords, 1.5, 1.5, {
-        name = dutyTargetBoxName,
-        heading = 0,
-        debugPoly = false,
-        minZ = coords.z - 1.0,
-        maxZ = coords.z + 1.0,
-    }, {
-        options = {{
-            type = "server",
-            event = "QBCore:ToggleDuty",
-            label = label,
-        }},
-        distance = 2.0
-    })
-
-    Config.Targets[dutyTargetBoxID] = {created = true}
+    if Config.UseTarget then
+        exports['qb-target']:AddBoxZone(dutyTargetBoxID, coords, 1.5, 1.5, {
+            name = dutyTargetBoxName,
+            heading = 0,
+            debugPoly = false,
+            minZ = coords.z - 1.0,
+            maxZ = coords.z + 1.0,
+        }, {
+            options = {{
+                type = "server",
+                event = "QBCore:ToggleDuty",
+                label = label,
+            }},
+            distance = 2.0
+        })
+    
+        Config.Targets[dutyTargetBoxID] = {created = true}
+    else
+        local zone = BoxZone:Create(coords, 1.5, 1.5, {
+            name = dutyTargetBoxName,
+            heading = 0,
+            debugPoly = false,
+            minZ = coords.z - 1.0,
+            maxZ = coords.z + 1.0,
+        })
+        zone:onPlayerInOut(function (isPointInside)
+            if isPointInside then
+                exports['qb-core']:DrawText("[E] " .. label, 'left')
+            else
+                exports['qb-core']:HideText()
+            end
+    
+            isInsideDutyZone = isPointInside
+        end)
+    
+        Config.Targets[dutyTargetBoxID] = {created = true, zone = zone}
+    end
 end
 
 local function RegisterStashTarget()
@@ -96,23 +126,44 @@ local function RegisterStashTarget()
     if PlayerJob.name ~= "mechanic" then
         return
     end
-    
-    exports['qb-target']:AddBoxZone(stashTargetBoxID, coords, 1.5, 1.5, {
-        name = stashTargetBoxID,
-        heading = 0,
-        debugPoly = false,
-        minZ = coords.z - 1.0,
-        maxZ = coords.z + 1.0,
-    }, {
-        options = {{
-            type = "client",
-            event = "qb-mechanicjob:client:target:OpenStash",
-            label = "Open Stash",
-        }},
-        distance = 2.0
-    })
 
-    Config.Targets[stashTargetBoxID] = {created = true}
+    if Config.UseTarget then
+        exports['qb-target']:AddBoxZone(stashTargetBoxID, coords, 1.5, 1.5, {
+            name = stashTargetBoxID,
+            heading = 0,
+            debugPoly = false,
+            minZ = coords.z - 1.0,
+            maxZ = coords.z + 1.0,
+        }, {
+            options = {{
+                type = "client",
+                event = "qb-mechanicjob:client:target:OpenStash",
+                label = "Open Stash",
+            }},
+            distance = 2.0
+        })
+    
+        Config.Targets[stashTargetBoxID] = {created = true}
+    else
+        local zone = BoxZone:Create(coords, 1.5, 1.5, {
+            name = stashTargetBoxID,
+            heading = 0,
+            debugPoly = false,
+            minZ = coords.z - 1.0,
+            maxZ = coords.z + 1.0,
+        })
+        zone:onPlayerInOut(function (isPointInside)
+            if isPointInside then
+                exports['qb-core']:DrawText("[E] Open Stash", 'left')
+            else
+                exports['qb-core']:HideText()
+            end
+    
+            isInsideStashZone = isPointInside
+        end)
+    
+        Config.Targets[stashTargetBoxID] = {created = true, zone = zone}
+    end
 end
 
 local function RegisterGarageZone()
@@ -193,21 +244,6 @@ local function loadAnimDict(dict)
         RequestAnimDict(dict)
         Wait(5)
     end
-end
-
-local function DrawText3Ds(x, y, z, text)
-	SetTextScale(0.35, 0.35)
-    SetTextFont(4)
-    SetTextProportional(1)
-    SetTextColour(255, 255, 255, 215)
-    SetTextEntry("STRING")
-    SetTextCentre(true)
-    AddTextComponentString(text)
-    SetDrawOrigin(x,y,z, 0)
-    DrawText(0.0, 0.0)
-    local factor = (string.len(text)) / 370
-    DrawRect(0.0, 0.0+0.0125, 0.017+ factor, 0.03, 0, 0, 0, 75)
-    ClearDrawOrigin()
 end
 
 local function SetClosestPlate()
@@ -584,10 +620,9 @@ local function UnattachVehicle()
     Config.Plates[ClosestPlate].AttachedVehicle = nil
     TriggerServerEvent('qb-vehicletuning:server:SetAttachedVehicle', false, ClosestPlate)
 
-    if Config.UseTarget then
-        DestroyVehiclePlateZone(ClosestPlate)
-        RegisterVehiclePlateZone(ClosestPlate, Config.Plates[ClosestPlate])
-    end
+    DestroyVehiclePlateZone(ClosestPlate)
+    RegisterVehiclePlateZone(ClosestPlate, Config.Plates[ClosestPlate])
+    
 end
 
 local function SpawnListVehicle(model)
@@ -745,28 +780,24 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
     PlayerJob = JobInfo
     onDuty = PlayerJob.onduty
 
-    if Config.UseTarget then
-        DeleteTarget(dutyTargetBoxID)
-        DeleteTarget(stashTargetBoxID)
-        RegisterDutyTarget()
+    DeleteTarget(dutyTargetBoxID)
+    DeleteTarget(stashTargetBoxID)
+    RegisterDutyTarget()
 
-        if onDuty then
-            RegisterStashTarget()
-        end
+    if onDuty then
+        RegisterStashTarget()
     end
 end)
 
 RegisterNetEvent('QBCore:Client:SetDuty', function(duty)
     onDuty = duty
+    
+    DeleteTarget(dutyTargetBoxID)
+    DeleteTarget(stashTargetBoxID)
+    RegisterDutyTarget()
 
-    if Config.UseTarget then
-        DeleteTarget(dutyTargetBoxID)
-        DeleteTarget(stashTargetBoxID)
-        RegisterDutyTarget()
-
-        if onDuty then
-            RegisterStashTarget()
-        end
+    if onDuty then
+        RegisterStashTarget()
     end
 end)
 
@@ -934,11 +965,9 @@ RegisterNetEvent('qb-mechanicjob:client:target:OpenStash', function ()
     })
 end)
 
-RegisterNetEvent('qb-mechanicjob:client:target:CloseMenu', function ()
-    if Config.UseTarget then
-        DestroyVehiclePlateZone(ClosestPlate)
-        RegisterVehiclePlateZone(ClosestPlate, Config.Plates[ClosestPlate])
-    end
+RegisterNetEvent('qb-mechanicjob:client:target:CloseMenu', function () 
+    DestroyVehiclePlateZone(ClosestPlate)
+    RegisterVehiclePlateZone(ClosestPlate, Config.Plates[ClosestPlate])
 
     TriggerEvent('qb-menu:client:closeMenu')
 end)
@@ -946,18 +975,14 @@ end)
 
 -- Threads
 
-CreateThread(function()
-    while true do
-        if LocalPlayer.state.isLoggedIn then
-            SetClosestPlate()
-        end
-        Wait(1000)
+CreateThread(function ()
+    local wait = 500
+    while not LocalPlayer.state.isLoggedIn do
+        -- do nothing
+        Wait(wait)
     end
-end)
 
-CreateThread(function()
-    local c = Config.Locations["exit"]
-    local Blip = AddBlipForCoord(c.x, c.y, c.z)
+    local Blip = AddBlipForCoord(Config.Locations["exit"].x, Config.Locations["exit"].y, Config.Locations["exit"].z)
     SetBlipSprite (Blip, 446)
     SetBlipDisplay(Blip, 4)
     SetBlipScale  (Blip, 0.7)
@@ -967,17 +992,6 @@ CreateThread(function()
     BeginTextCommandSetBlipName("STRING")
     AddTextComponentSubstringPlayerName("Autocare Mechanic")
     EndTextCommandSetBlipName(Blip)
-end)
-
-CreateThread(function ()
-    if not Config.UseTarget then
-        return
-    end
-
-    while not LocalPlayer.state.isLoggedIn do
-        -- do nothing
-        Wait(500)
-    end
 
     RegisterGarageZone()
     RegisterDutyTarget()
@@ -985,175 +999,70 @@ CreateThread(function ()
     SetVehiclePlateZones()
 
     while true do
-        local wait = 1000
-        if PlayerJob.name == "mechanic" and onDuty then
-            if isInsideGarageZone then
+        wait = 500
+        SetClosestPlate()
+
+        if PlayerJob.name == "mechanic" then
+            
+            if isInsideDutyZone then
                 wait = 0
-                local inVehicle = IsPedInAnyVehicle(PlayerPedId())
                 if IsControlJustPressed(0, 38) then
-                    if inVehicle then
-                        DeleteVehicle(GetVehiclePedIsIn(PlayerPedId()))
-                        exports['qb-core']:HideText()
-                    else
-                        VehicleList()
-                        exports['qb-core']:HideText()
-                    end
+                    TriggerServerEvent("QBCore:ToggleDuty")
                 end
             end
 
-            if isInsideVehiclePlateZone then
-                wait = 0
-                local attachedVehicle = Config.Plates[ClosestPlate].AttachedVehicle
-                local coords = Config.Plates[ClosestPlate].coords
-                if attachedVehicle then
+            if onDuty then
+                if isInsideStashZone then
+                    wait = 0
                     if IsControlJustPressed(0, 38) then
-                        exports['qb-core']:HideText()
-                        OpenMenu()
-                    end
-                else
-                    if IsControlJustPressed(0, 38) and IsPedInAnyVehicle(PlayerPedId()) then
-                        local veh = GetVehiclePedIsIn(PlayerPedId())
-                        DoScreenFadeOut(150)
-                        Wait(150)
-                        Config.Plates[ClosestPlate].AttachedVehicle = veh
-                        SetEntityCoords(veh, coords)
-                        SetEntityHeading(veh, coords.w)
-                        FreezeEntityPosition(veh, true)
-                        Wait(500)
-                        DoScreenFadeIn(150)
-                        TriggerServerEvent('qb-vehicletuning:server:SetAttachedVehicle', veh, ClosestPlate)
-                        
-                        DestroyVehiclePlateZone(ClosestPlate)
-                        RegisterVehiclePlateZone(ClosestPlate, Config.Plates[ClosestPlate])
+                        TriggerEvent("qb-mechanicjob:client:target:OpenStash")
                     end
                 end
-            end 
+    
+                if isInsideGarageZone then
+                    wait = 0
+                    local inVehicle = IsPedInAnyVehicle(PlayerPedId())
+                    if IsControlJustPressed(0, 38) then
+                        if inVehicle then
+                            DeleteVehicle(GetVehiclePedIsIn(PlayerPedId()))
+                            exports['qb-core']:HideText()
+                        else
+                            VehicleList()
+                            exports['qb-core']:HideText()
+                        end
+                    end
+                end
+    
+                if isInsideVehiclePlateZone then
+                    wait = 0
+                    local attachedVehicle = Config.Plates[ClosestPlate].AttachedVehicle
+                    local coords = Config.Plates[ClosestPlate].coords
+                    if attachedVehicle then
+                        if IsControlJustPressed(0, 38) then
+                            exports['qb-core']:HideText()
+                            OpenMenu()
+                        end
+                    else
+                        if IsControlJustPressed(0, 38) and IsPedInAnyVehicle(PlayerPedId()) then
+                            local veh = GetVehiclePedIsIn(PlayerPedId())
+                            DoScreenFadeOut(150)
+                            Wait(150)
+                            Config.Plates[ClosestPlate].AttachedVehicle = veh
+                            SetEntityCoords(veh, coords)
+                            SetEntityHeading(veh, coords.w)
+                            FreezeEntityPosition(veh, true)
+                            Wait(500)
+                            DoScreenFadeIn(150)
+                            TriggerServerEvent('qb-vehicletuning:server:SetAttachedVehicle', veh, ClosestPlate)
+                            
+                            DestroyVehiclePlateZone(ClosestPlate)
+                            RegisterVehiclePlateZone(ClosestPlate, Config.Plates[ClosestPlate])
+                        end
+                    end
+                end  
+            end
         end
         Wait(wait)
-    end
-end)
-
-CreateThread(function()
-    if Config.UseTarget then
-        return
-    end
-
-    while true do
-        local inRange = false
-        if LocalPlayer.state.isLoggedIn then
-            if PlayerJob.name == "mechanic" then
-                local pos = GetEntityCoords(PlayerPedId())
-                local StashDistance = #(pos - Config.Locations["stash"])
-                local OnDutyDistance = #(pos - Config.Locations["duty"])
-                local VehicleDistance = #(pos - vector3(Config.Locations["vehicle"].x, Config.Locations["vehicle"].y, Config.Locations["vehicle"].z))
-
-                if onDuty then
-                    if StashDistance < 20 then
-                        inRange = true
-                        DrawMarker(2, Config.Locations["stash"].x, Config.Locations["stash"].y, Config.Locations["stash"].z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.3, 0.2, 210, 50, 9, 255, false, false, false, true, false, false, false)
-
-                        if StashDistance < 1 then
-                            DrawText3Ds(Config.Locations["stash"].x, Config.Locations["stash"].y, Config.Locations["stash"].z, "[E] Open Stash")
-                            if IsControlJustReleased(0, 38) then
-                               TriggerEvent('qb-mechanicjob:client:target:OpenStash')
-                            end
-                        end
-                    end
-                end
-
-                if onDuty then
-                    if VehicleDistance < 20 then
-                        inRange = true
-                        DrawMarker(2, Config.Locations["vehicle"].x, Config.Locations["vehicle"].y, Config.Locations["vehicle"].z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.3, 0.2, 210, 50, 9, 255, false, false, false, true, false, false, false)
-                        if VehicleDistance < 1 then
-                            local InVehicle = IsPedInAnyVehicle(PlayerPedId())
-
-                            if InVehicle then
-                                DrawText3Ds(Config.Locations["vehicle"].x, Config.Locations["vehicle"].y, Config.Locations["vehicle"].z, '[E] Hide Vehicle')
-                                if IsControlJustPressed(0, 38) then
-                                    DeleteVehicle(GetVehiclePedIsIn(PlayerPedId()))
-                                end
-                            else
-                                DrawText3Ds(Config.Locations["vehicle"].x, Config.Locations["vehicle"].y, Config.Locations["vehicle"].z, '[E] Get Vehicle')
-                                if IsControlJustPressed(0, 38) then
-                                    if IsControlJustPressed(0, 38) then
-                                        VehicleList()
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-
-                if OnDutyDistance < 20 then
-                    inRange = true
-                    DrawMarker(2, Config.Locations["duty"].x, Config.Locations["duty"].y, Config.Locations["duty"].z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.3, 0.2, 210, 50, 9, 255, false, false, false, true, false, false, false)
-
-                    if OnDutyDistance < 1 then
-                        if onDuty then
-                            DrawText3Ds(Config.Locations["duty"].x, Config.Locations["duty"].y, Config.Locations["duty"].z, "[E] Off Duty")
-                        else
-                            DrawText3Ds(Config.Locations["duty"].x, Config.Locations["duty"].y, Config.Locations["duty"].z, "[E] On Duty")
-                        end
-                        if IsControlJustReleased(0, 38) then
-                            TriggerServerEvent("QBCore:ToggleDuty")
-                        end
-                    end
-                end
-
-                if onDuty then
-                    for k, v in pairs(Config.Plates) do
-                        if v.AttachedVehicle == nil then
-                            local PlateDistance = #(pos - vector3(v.coords.x, v.coords.y, v.coords.z))
-                            if PlateDistance < 20 then
-                                inRange = true
-                                DrawMarker(2, v.coords.x, v.coords.y, v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.3, 0.2, 255, 255, 255, 255, 0, 0, 0, 1, 0, 0, 0)
-                                if PlateDistance < 2 then
-                                    local veh = GetVehiclePedIsIn(PlayerPedId())
-                                    if IsPedInAnyVehicle(PlayerPedId()) then
-                                        if not IsThisModelABicycle(GetEntityModel(veh)) then
-                                            DrawText3Ds(v.coords.x, v.coords.y, v.coords.z + 0.3, "[E] Place The Vehicle On The Platform")
-                                            if IsControlJustPressed(0, 38) then
-                                                DoScreenFadeOut(150)
-                                                Wait(150)
-                                                Config.Plates[ClosestPlate].AttachedVehicle = veh
-                                                SetEntityCoords(veh, v.coords)
-                                                SetEntityHeading(veh, v.coords.w)
-                                                FreezeEntityPosition(veh, true)
-                                                Wait(500)
-                                                DoScreenFadeIn(250)
-                                                TriggerServerEvent('qb-vehicletuning:server:SetAttachedVehicle', veh, k)
-                                            end
-                                        else
-                                            QBCore.Functions.Notify("You Cannot Put Bicycles On The Platform!", "error")
-                                        end
-                                    end
-                                end
-                            end
-                        else
-                            local PlateDistance = #(pos - vector3(v.coords.x, v.coords.y, v.coords.z))
-                            if PlateDistance < 3 then
-                                inRange = true
-                                DrawText3Ds(v.coords.x, v.coords.y, v.coords.z, "[E] Open Menu")
-                                if IsControlJustPressed(0, 38) then
-                                    OpenMenu()
-                                end
-                            end
-                        end
-                    end
-                end
-
-                if not inRange then
-                    Wait(1500)
-                end
-            else
-                Wait(1500)
-            end
-        else
-            Wait(1500)
-        end
-
-        Wait(3)
     end
 end)
 

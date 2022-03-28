@@ -1,9 +1,14 @@
 Config = {}
 
+-- **** IMPORTANT ****
+-- UseTarget should only be set to true when using qb-target
+Config.UseTarget = GetConvar('UseTarget', 'false') == 'true'
+Config.Targets = {}
+
 Config.AttachedVehicle = nil
 
 Config.AuthorizedIds = {
-    "insertcitizenidhere",
+    -- "insertcitizenidhere",
 }
 
 Config.MaxStatusValues = {
@@ -72,16 +77,32 @@ Config.Businesses = {
 
 Config.Plates = {
     [1] = {
-        coords = vector4(-340.95, -128.24, 39, 160.46),
+        coords = vector4(-340.95, -128.24, 39, 160.0),
+        boxData = {
+            heading = 340,
+            length = 5,
+            width = 2.5,
+            debugPoly = false
+        },
+        AttachedVehicle = nil,
+    },
+    [2] = {
+        coords = vector4(-326.78, -144.82, 39.06, 70),
+        boxData = {
+            heading = 249,
+            length = 6.5,
+            width = 5,
+            debugPoly = false
+        },
         AttachedVehicle = nil,
     },
 }
 
 Config.Locations = {
     ["exit"] = vector3(-339.04, -135.53, 39),
-    ["stash"] = vector3(-323.19, -129.86, 39),
-    ["duty"] = vector3(-344.35, -123.39, 39), 
-    ["vehicle"] = vector4(-370.51, -107.88, 38.35, 72.56), 
+    ["duty"] = vector3(-323.39, -129.6, 39.01),
+    ["stash"] = vector3(-319.49, -131.9, 38.98),
+    ["vehicle"] = vector4(-370.51, -107.88, 38.35, 72.56),
 }
 
 Config.Vehicles = {

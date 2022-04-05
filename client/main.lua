@@ -78,7 +78,7 @@ local function RegisterDutyTarget()
 
     if Config.UseTarget then
         exports['qb-target']:AddBoxZone(dutyTargetBoxID, coords, 1.5, 1.5, {
-            name = dutyTargetBoxName,
+            name = dutyTargetBoxID,
             heading = 0,
             debugPoly = false,
             minZ = coords.z - 1.0,
@@ -95,7 +95,7 @@ local function RegisterDutyTarget()
         Config.Targets[dutyTargetBoxID] = {created = true}
     else
         local zone = BoxZone:Create(coords, 1.5, 1.5, {
-            name = dutyTargetBoxName,
+            name = dutyTargetBoxID,
             heading = 0,
             debugPoly = false,
             minZ = coords.z - 1.0,

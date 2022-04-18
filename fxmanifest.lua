@@ -4,7 +4,11 @@ game 'gta5'
 description 'QB-MechanicJob'
 version '2.0.1'
 
-shared_script 'config.lua'
+shared_scripts {
+    'config.lua',
+    '@qb-core/shared/locale.lua',
+    'locales/tc.lua' -- Change this to your preferred language
+}
 
 client_scripts {
 	'client/main.lua',

@@ -208,13 +208,10 @@ RegisterNetEvent('qb-vehicletuning:server:CheckForItems', function(part)
                 Wait(500)
             end
         else
-            TriggerClientEvent('QBCore:Notify', src,
-                "You Dont Have Enough " .. QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"] .. " (min. " ..
-                    Config.RepairCostAmount[part].costs .. "x)", "error")
+            TriggerClientEvent('QBCore:Notify', src, Lang:t('error.not_enough_materials', {Part = QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"], cost = Config.RepairCostAmount[part].costs}), "error")
         end
     else
-        TriggerClientEvent('QBCore:Notify', src, "You Do Not Have " ..
-            QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"] .. " bij je!", "error")
+        TriggerClientEvent('QBCore:Notify', src, Lang:t('error.not_enough_materials',{Part = QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"]}), "error")
     end
 end)
 
@@ -233,7 +230,7 @@ QBCore.Commands.Add("setvehiclestatus", "Set Vehicle Status", {{
     TriggerClientEvent("vehiclemod:client:setPartLevel", source, part, level)
 end, "god")
 
-QBCore.Commands.Add("setmechanic", "Give Someone The Mechanic job", {{
+QBCore.Commands.Add("setmechanic", Lang:t('commands.setmechanic'), {{
     name = "id",
     help = "ID Of The Player"
 }}, false, function(source, args)
@@ -245,16 +242,14 @@ QBCore.Commands.Add("setmechanic", "Give Someone The Mechanic job", {{
             local TargetData = QBCore.Functions.GetPlayer(TargetId)
             if TargetData ~= nil then
                 TargetData.Functions.SetJob("mechanic")
-                TriggerClientEvent('QBCore:Notify', TargetData.PlayerData.source,
-                    "You Were Hired As An Autocare Employee!")
-                TriggerClientEvent('QBCore:Notify', source, "You have (" .. TargetData.PlayerData.charinfo.firstname ..
-                    ") Hired As An Autocare Employee!")
+                TriggerClientEvent('QBCore:Notify', TargetData.PlayerData.source, Lang:t('info.hired'))
+                TriggerClientEvent('QBCore:Notify', source, Lang:t('info.have_hired', {name = TargetData.PlayerData.charinfo.firstname}))
             end
         else
-            TriggerClientEvent('QBCore:Notify', source, "You Must Provide A Player ID!")
+            TriggerClientEvent('QBCore:Notify', source, Lang:t('error.must_id'), 'error')
         end
     else
-        TriggerClientEvent('QBCore:Notify', source, "You Cannot Do This!", "error")
+        TriggerClientEvent('QBCore:Notify', source, Lang:t('error.not_auth'), "error")
     end
 end)
 
@@ -280,9 +275,9 @@ QBCore.Commands.Add("firemechanic", "Fire A Mechanic", {{
                 end
             end
         else
-            TriggerClientEvent('QBCore:Notify', source, "You Must Provide A Player ID!", "error")
+            TriggerClientEvent('QBCore:Notify', source, Lang:t('error.must_id'), "error")
         end
     else
-        TriggerClientEvent('QBCore:Notify', source, "You Cannot Do This!", "error")
+        TriggerClientEvent('QBCore:Notify', source, Lang:t('error.not_auth'), "error")
     end
 end)

@@ -265,7 +265,7 @@ local function SetClosestPlate()
 end
 
 local function ScrapAnim(time)
-    local time = time / 1000
+    time = time / 1000
     loadAnimDict("mp_car_bomb")
     TaskPlayAnim(PlayerPedId(), "mp_car_bomb", "car_bomb_mechanic" ,3.0, 3.0, -1, 16, 0, false, false, false)
     openingDoor = true
@@ -456,7 +456,7 @@ local function SendStatusMessage(statusList)
 end
 
 local function OpenMenu()
-    local OpenMenu = {
+    local openMenu = {
         {
             header = "Vehicle Options",
             isMenuHeader = true
@@ -492,7 +492,7 @@ local function OpenMenu()
             }
         },
     }
-    exports['qb-menu']:openMenu(OpenMenu)
+    exports['qb-menu']:openMenu(openMenu)
 end
 
 local function PartsMenu()
@@ -533,7 +533,7 @@ local function PartsMenu()
                         event = "qb-mechanicjob:client:NoDamage",
                     }
                 }
-            end                               
+            end
         end
         vehicleMenu[#vehicleMenu+1] = {
             header = "⬅ Close Menu",
@@ -557,7 +557,7 @@ local function PartMenu(data)
         },
         {
             header = ""..partName.."",
-            txt = "Repair : "..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." "..Config.RepairCostAmount[part].costs.."x", 
+            txt = "Repair : "..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." "..Config.RepairCostAmount[part].costs.."x",
             params = {
                 event = "qb-mechanicjob:client:RepairPart",
                 args = {
@@ -585,7 +585,7 @@ local function PartMenu(data)
 end
 
 local function NoDamage()
-    local NoDamage = {
+    local noDamage = {
         {
             header = "No Damage",
             isMenuHeader = true
@@ -605,7 +605,7 @@ local function NoDamage()
             }
         },
     }
-    exports['qb-menu']:openMenu(NoDamage)
+    exports['qb-menu']:openMenu(noDamage)
 end
 
 local function UnattachVehicle()
@@ -661,7 +661,7 @@ local function VehicleList()
                     spawnName = k
                 }
             }
-        }                              
+        }
     end
     vehicleMenu[#vehicleMenu+1] = {
         header = "⬅ Close Menu",
@@ -726,11 +726,11 @@ end
 
 -- Events
 
-RegisterNetEvent("qb-mechanicjob:client:UnattachVehicle",function(data)
+RegisterNetEvent("qb-mechanicjob:client:UnattachVehicle",function()
     UnattachVehicle()
 end)
 
-RegisterNetEvent("qb-mechanicjob:client:PartsMenu",function(data)
+RegisterNetEvent("qb-mechanicjob:client:PartsMenu",function()
     PartsMenu()
 end)
 
@@ -738,11 +738,11 @@ RegisterNetEvent("qb-mechanicjob:client:PartMenu",function(data)
     PartMenu(data)
 end)
 
-RegisterNetEvent("qb-mechanicjob:client:NoDamage",function(data)
+RegisterNetEvent("qb-mechanicjob:client:NoDamage",function()
     NoDamage()
 end)
 
-RegisterNetEvent("qb-mechanicjob:client:CheckStatus",function(data)
+RegisterNetEvent("qb-mechanicjob:client:CheckStatus",function()
     CheckStatus()
 end)
 
@@ -831,7 +831,7 @@ RegisterNetEvent('vehiclemod:client:setVehicleStatus', function(plate, status)
     VehicleStatus[plate] = status
 end)
 
-RegisterNetEvent('vehiclemod:client:getVehicleStatus', function(plate, status)
+RegisterNetEvent('vehiclemod:client:getVehicleStatus', function()
     if not (IsPedInAnyVehicle(PlayerPedId(), false)) then
         local veh = GetVehiclePedIsIn(PlayerPedId(), true)
         if veh ~= nil and veh ~= 0 then
@@ -965,7 +965,7 @@ RegisterNetEvent('qb-mechanicjob:client:target:OpenStash', function ()
     })
 end)
 
-RegisterNetEvent('qb-mechanicjob:client:target:CloseMenu', function () 
+RegisterNetEvent('qb-mechanicjob:client:target:CloseMenu', function()
     DestroyVehiclePlateZone(ClosestPlate)
     RegisterVehiclePlateZone(ClosestPlate, Config.Plates[ClosestPlate])
 
@@ -975,7 +975,7 @@ end)
 
 -- Threads
 
-CreateThread(function ()
+CreateThread(function()
     local wait = 500
     while not LocalPlayer.state.isLoggedIn do
         -- do nothing
@@ -1059,7 +1059,7 @@ CreateThread(function ()
                             RegisterVehiclePlateZone(ClosestPlate, Config.Plates[ClosestPlate])
                         end
                     end
-                end  
+                end
             end
         end
         Wait(wait)

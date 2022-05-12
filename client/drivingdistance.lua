@@ -98,13 +98,11 @@ CreateThread(function()
                                 local odd = math.random(3)
                                 local CurrentData = VehicleStatus[plate]
                                 if chance == odd then
-                                    for k, v in pairs(Config.Damages) do
+                                    for k, _ in pairs(Config.Damages) do
                                         local randmultiplier = (math.random(DamageData.multiplier.min, DamageData.multiplier.max) / 100)
                                         local newDamage = 0
                                         if CurrentData[k] - randmultiplier >= 0 then
                                             newDamage = CurrentData[k] - randmultiplier
-                                        else
-                                            newDamage = 0
                                         end
                                         TriggerServerEvent('qb-vehicletuning:server:SetPartLevel', plate, k, newDamage)
                                     end

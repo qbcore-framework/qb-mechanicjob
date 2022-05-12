@@ -37,11 +37,11 @@ end
 
 -- Callbacks
 
-QBCore.Functions.CreateCallback('qb-vehicletuning:server:GetDrivingDistances', function(source, cb)
+QBCore.Functions.CreateCallback('qb-vehicletuning:server:GetDrivingDistances', function(_, cb)
     cb(VehicleDrivingDistance)
 end)
 
-QBCore.Functions.CreateCallback('qb-vehicletuning:server:IsVehicleOwned', function(source, cb, plate)
+QBCore.Functions.CreateCallback('qb-vehicletuning:server:IsVehicleOwned', function(_, cb, plate)
     local retval = false
     local result = MySQL.Sync.fetchScalar('SELECT 1 from player_vehicles WHERE plate = ?', {plate})
     if result then
@@ -51,13 +51,13 @@ QBCore.Functions.CreateCallback('qb-vehicletuning:server:IsVehicleOwned', functi
 end)
 
 
-QBCore.Functions.CreateCallback('qb-vehicletuning:server:GetAttachedVehicle', function(source, cb)
+QBCore.Functions.CreateCallback('qb-vehicletuning:server:GetAttachedVehicle', function(_, cb)
     cb(Config.Plates)
 end)
 
-QBCore.Functions.CreateCallback('qb-vehicletuning:server:IsMechanicAvailable', function(source, cb)
+QBCore.Functions.CreateCallback('qb-vehicletuning:server:IsMechanicAvailable', function(_, cb)
     local amount = 0
-    for k, v in pairs(QBCore.Functions.GetPlayers()) do
+    for _, v in pairs(QBCore.Functions.GetPlayers()) do
         local Player = QBCore.Functions.GetPlayer(v)
         if Player ~= nil then
             if (Player.PlayerData.job.name == "mechanic" and Player.PlayerData.job.onduty) then
@@ -68,7 +68,7 @@ QBCore.Functions.CreateCallback('qb-vehicletuning:server:IsMechanicAvailable', f
     cb(amount)
 end)
 
-QBCore.Functions.CreateCallback('qb-vehicletuning:server:GetStatus', function(source, cb, plate)
+QBCore.Functions.CreateCallback('qb-vehicletuning:server:GetStatus', function(_, cb, plate)
     if VehicleStatus[plate] ~= nil and next(VehicleStatus[plate]) ~= nil then
         cb(VehicleStatus[plate])
     else
@@ -202,7 +202,7 @@ RegisterNetEvent('qb-vehicletuning:server:CheckForItems', function(part)
             TriggerClientEvent('qb-vehicletuning:client:RepaireeePart', src, part)
             Player.Functions.RemoveItem(Config.RepairCostAmount[part].item, Config.RepairCostAmount[part].costs)
 
-            for i = 1, Config.RepairCostAmount[part].costs, 1 do
+            for _ = 1, Config.RepairCostAmount[part].costs, 1 do
                 TriggerClientEvent('inventory:client:ItemBox', src,
                     QBCore.Shared.Items[Config.RepairCostAmount[part].item], "remove")
                 Wait(500)

@@ -55,7 +55,7 @@ local function DeleteTarget(id)
             Config.Targets[id].zone:destroy();
         end
     end
-    
+
     Config.Targets[id] = nil
 end
 
@@ -91,7 +91,7 @@ local function RegisterDutyTarget()
             }},
             distance = 2.0
         })
-    
+
         Config.Targets[dutyTargetBoxID] = {created = true}
     else
         local zone = BoxZone:Create(coords, 1.5, 1.5, {
@@ -107,10 +107,10 @@ local function RegisterDutyTarget()
             else
                 exports['qb-core']:HideText()
             end
-    
+
             isInsideDutyZone = isPointInside
         end)
-    
+
         Config.Targets[dutyTargetBoxID] = {created = true, zone = zone}
     end
 end
@@ -142,7 +142,7 @@ local function RegisterStashTarget()
             }},
             distance = 2.0
         })
-    
+
         Config.Targets[stashTargetBoxID] = {created = true}
     else
         local zone = BoxZone:Create(coords, 1.5, 1.5, {
@@ -158,10 +158,10 @@ local function RegisterStashTarget()
             else
                 exports['qb-core']:HideText()
             end
-    
+
             isInsideStashZone = isPointInside
         end)
-    
+
         Config.Targets[stashTargetBoxID] = {created = true, zone = zone}
     end
 end
@@ -622,7 +622,7 @@ local function UnattachVehicle()
 
     DestroyVehiclePlateZone(ClosestPlate)
     RegisterVehiclePlateZone(ClosestPlate, Config.Plates[ClosestPlate])
-    
+
 end
 
 local function SpawnListVehicle(model)
@@ -633,14 +633,15 @@ local function SpawnListVehicle(model)
         w = Config.Locations["vehicle"].w,
     }
 
-    QBCore.Functions.SpawnVehicle(model, function(veh)
+    QBCore.Functions.TriggerCallback('QBCore:Server:SpawnVehicle', function(netId)
+        local veh = NetToVeh(netId)
         SetVehicleNumberPlateText(veh, "ACBV"..tostring(math.random(1000, 9999)))
         SetEntityHeading(veh, coords.w)
         exports['LegacyFuel']:SetFuel(veh, 100.0)
         TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
         TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(veh))
         SetVehicleEngineOn(veh, true, true)
-    end, coords, true)
+    end, model, coords, true)
 end
 
 local function VehicleList()
@@ -791,7 +792,7 @@ end)
 
 RegisterNetEvent('QBCore:Client:SetDuty', function(duty)
     onDuty = duty
-    
+
     DeleteTarget(dutyTargetBoxID)
     DeleteTarget(stashTargetBoxID)
     RegisterDutyTarget()
@@ -1003,7 +1004,7 @@ CreateThread(function()
         SetClosestPlate()
 
         if PlayerJob.name == "mechanic" then
-            
+
             if isInsideDutyZone then
                 wait = 0
                 if IsControlJustPressed(0, 38) then
@@ -1018,7 +1019,7 @@ CreateThread(function()
                         TriggerEvent("qb-mechanicjob:client:target:OpenStash")
                     end
                 end
-    
+
                 if isInsideGarageZone then
                     wait = 0
                     local inVehicle = IsPedInAnyVehicle(PlayerPedId())
@@ -1032,7 +1033,7 @@ CreateThread(function()
                         end
                     end
                 end
-    
+
                 if isInsideVehiclePlateZone then
                     wait = 0
                     local attachedVehicle = Config.Plates[ClosestPlate].AttachedVehicle
@@ -1054,7 +1055,7 @@ CreateThread(function()
                             Wait(500)
                             DoScreenFadeIn(150)
                             TriggerServerEvent('qb-vehicletuning:server:SetAttachedVehicle', veh, ClosestPlate)
-                            
+
                             DestroyVehiclePlateZone(ClosestPlate)
                             RegisterVehiclePlateZone(ClosestPlate, Config.Plates[ClosestPlate])
                         end

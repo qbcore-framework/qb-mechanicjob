@@ -1,0 +1,82 @@
+local Translations = {
+    progress = {
+        repveh = "Repairing...",
+    },
+    comm = {
+        svstat = "Set Vehicle Status",
+        svstatp = "part",
+        svstatptxt = "Type The Part You Want To Edit",
+        svstatpam = "amount",
+        svstatpamtxt = "The Percentage Fixed",
+        smch = "Give Someone The Mechanic job",
+        smchid = "id",
+        smchidtxt = "ID Of The Player",
+        famech = "Fire A Mechanic",
+        famechid = "id",
+        famechidtxt = "ID Of The Player",
+    },
+    notify = {
+        repcancel = "Repair Cancelled",
+        pcanceled = "Process Canceled",
+        nemat = "There Are Not Enough Materials In The Safe",
+        partrep = "The %{value} Is Repaired!",
+        sunk = "Status Unknown",
+        navveh = "Not A Valid Vehicle",
+        navpart = "Not A Valid Part",
+        yancveh = "You Are Not Close Enough To The Vehicle",
+        ymbiaveh = "You Must Be In The Vehicle First",
+        ymboveh = "You Must Be Outside The Vehicle",
+        yantdob = "You Are Not The Driver Or On A Bicycle",
+        yanoveh = "You Are Not In A Vehicle",
+        ydnhenough = "You Dont Have Enough %{value1} (min. %{value2} x)",
+        ydnhave = "You Do Not Have %{value} bij je!",
+        ywhamech = "You Were Hired As An Autocare Employee!",
+        yhhamech = "You have Hired %{value} As An Autocare Employee!",
+        ympavid = "You Must Provide A Player ID!",
+        ycndt = "You Cannot Do This!",
+        ywfasmech = "You Were Fired As An Autocare Employee!",
+        yhfamech = "You have Fired %{value} As Autocare Employee!",
+        yanaemmech = "Youre Not An Employee of Autocare!",
+
+    },
+    menu = {
+        stjob = "Sign On Duty",
+        stpjob = "Sign Off Duty",
+        opstash = "Open Stash",
+        mheader = "Vehicle Options",
+        disveh = "Disconnect Vehicle",
+        disvehtxt = "Unattach Vehicle in Lift",
+        cvech = "Check Status",
+        cvechtxt = "Check Vehicle Status",
+        vehparts = "Vehicle Parts",
+        vehpartstxt = "Repair Vehicle Parts",
+        closemenu = "⬅ Close Menu",
+        backmenu = "⬅ Back Menu",
+        backmenutxt = "Back to parts menu",
+        repveh = "Repair : ",
+        nodamage = "No Damage",
+        pnodamage = "Back Menu",
+        pnodamagetxt = "There Is No Damage To This Part!",
+    },
+
+    interaction = {
+        pstash = "[E] Open Stash",
+        hvehicle = "[E] Hide Vehicle",
+        gvehicle = "[E] Get Vehicle",
+        opmenu = "[E] Open Menu",
+        wovehicle = "[E] Work On Vehicle",
+    },
+    label = {
+        vstatus = "Vehicle Status",
+        mstatus = "Status",
+        mstat2 = "Status: ",
+        vehlist = "Vehicle List",
+        vehtxt = "Vehicle: ",
+        ablip = "Autocare Mechanic", -- name of the blip
+    },
+
+}
+Lang = Locale:new({
+    phrases = Translations,
+    warnOnMissing = true
+})

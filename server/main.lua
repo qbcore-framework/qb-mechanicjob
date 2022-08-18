@@ -208,34 +208,31 @@ RegisterNetEvent('qb-vehicletuning:server:CheckForItems', function(part)
                 Wait(500)
             end
         else
-            TriggerClientEvent('QBCore:Notify', src,
-                "You Dont Have Enough " .. QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"] .. " (min. " ..
-                    Config.RepairCostAmount[part].costs .. "x)", "error")
+            TriggerClientEvent('QBCore:Notify', src, Lang:t('notify.ydnhenough', {value1 = QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"], value2 = Config.RepairCostAmount[part].costs}), "error")
         end
     else
-        TriggerClientEvent('QBCore:Notify', src, "You Do Not Have " ..
-            QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"] .. " bij je!", "error")
+        TriggerClientEvent('QBCore:Notify', src, Lang:t('notify.ydnhave', {value = QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"]}), "error")
     end
 end)
 
 
 -- Commands
 
-QBCore.Commands.Add("setvehiclestatus", "Set Vehicle Status", {{
-    name = "part",
-    help = "Type The Part You Want To Edit"
+QBCore.Commands.Add("setvehiclestatus", Lang:t("comm.svstat"), {{
+    name = Lang:t("comm.svstatp"),
+    help = Lang:t("comm.svstatptxt")
 }, {
-    name = "amount",
-    help = "The Percentage Fixed"
+    name = Lang:t("comm.svstatpam"),
+    help = Lang:t("comm.svstatpamtxt")
 }}, true, function(source, args)
     local part = args[1]:lower()
     local level = tonumber(args[2])
     TriggerClientEvent("vehiclemod:client:setPartLevel", source, part, level)
 end, "god")
 
-QBCore.Commands.Add("setmechanic", "Give Someone The Mechanic job", {{
-    name = "id",
-    help = "ID Of The Player"
+QBCore.Commands.Add("setmechanic", Lang:t("comm.smch"), {{
+    name = Lang:t("comm.smchid"),
+    help = Lang:t("comm.smchidtxt")
 }}, false, function(source, args)
     local Player = QBCore.Functions.GetPlayer(source)
 
@@ -245,22 +242,20 @@ QBCore.Commands.Add("setmechanic", "Give Someone The Mechanic job", {{
             local TargetData = QBCore.Functions.GetPlayer(TargetId)
             if TargetData ~= nil then
                 TargetData.Functions.SetJob("mechanic")
-                TriggerClientEvent('QBCore:Notify', TargetData.PlayerData.source,
-                    "You Were Hired As An Autocare Employee!")
-                TriggerClientEvent('QBCore:Notify', source, "You have (" .. TargetData.PlayerData.charinfo.firstname ..
-                    ") Hired As An Autocare Employee!")
+                TriggerClientEvent('QBCore:Notify', TargetData.PlayerData.source, Lang:t("notify.ywhamech"), "success")
+                TriggerClientEvent('QBCore:Notify', source, Lang:t('notify.yhhamech', {value = TargetData.PlayerData.charinfo.firstname}), "success")
             end
         else
-            TriggerClientEvent('QBCore:Notify', source, "You Must Provide A Player ID!")
+            TriggerClientEvent('QBCore:Notify', source, Lang:t("notify.ympavid"), "error")
         end
     else
-        TriggerClientEvent('QBCore:Notify', source, "You Cannot Do This!", "error")
+        TriggerClientEvent('QBCore:Notify', source, Lang:t("notify.ycndt"), "error")
     end
 end)
 
-QBCore.Commands.Add("firemechanic", "Fire A Mechanic", {{
-    name = "id",
-    help = "ID Of The Player"
+QBCore.Commands.Add("firemechanic", Lang:t("comm.famech"), {{
+    name = Lang:t("comm.famechid"),
+    help = Lang:t("comm.famechidtxt")
 }}, false, function(source, args)
     local Player = QBCore.Functions.GetPlayer(source)
 
@@ -271,18 +266,16 @@ QBCore.Commands.Add("firemechanic", "Fire A Mechanic", {{
             if TargetData ~= nil then
                 if TargetData.PlayerData.job.name == "mechanic" then
                     TargetData.Functions.SetJob("unemployed")
-                    TriggerClientEvent('QBCore:Notify', TargetData.PlayerData.source,
-                        "You Were Fired As An Autocare Employee!")
-                    TriggerClientEvent('QBCore:Notify', source,
-                        "You have (" .. TargetData.PlayerData.charinfo.firstname .. ") Fired As Autocare Employee!")
+                    TriggerClientEvent('QBCore:Notify', TargetData.PlayerData.source, Lang:t("notify.ywfasmech"), "error")
+                    TriggerClientEvent('QBCore:Notify', source, Lang:t('notify.yhfamech', {value = TargetData.PlayerData.charinfo.firstname}), "success")
                 else
-                    TriggerClientEvent('QBCore:Notify', source, "Youre Not An Employee of Autocare!", "error")
+                    TriggerClientEvent('QBCore:Notify', source, Lang:t("notify.yanaemmech"), "error")
                 end
             end
         else
-            TriggerClientEvent('QBCore:Notify', source, "You Must Provide A Player ID!", "error")
+            TriggerClientEvent('QBCore:Notify', source, Lang:t("notify.ympavid"), "error")
         end
     else
-        TriggerClientEvent('QBCore:Notify', source, "You Cannot Do This!", "error")
+        TriggerClientEvent('QBCore:Notify', source, Lang:t("notify.ycndt"), "error")
     end
 end)

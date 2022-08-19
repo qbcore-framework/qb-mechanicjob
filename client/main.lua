@@ -929,11 +929,11 @@ RegisterNetEvent('vehiclemod:client:repairPart', function(part, level, needAmoun
                                 SetVehicleFixed(veh)
                                 SetVehicleEngineHealth(veh, enhealth)
                                 TriggerServerEvent("vehiclemod:server:updatePart", plate, part, GetVehicleBodyHealth(veh))
-                                TriggerServerEvent("QBCore:Server:RemoveItem", Config.RepairCost[part], needAmount)
+                                TriggerServerEvent("qb-mechanicjob:server:removePart", part, needAmount)
                                 TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items[Config.RepairCost[part]], "remove")
                             elseif part ~= "engine" then
                                 TriggerServerEvent("vehiclemod:server:updatePart", plate, part, GetVehicleStatus(plate, part) + level)
-                                TriggerServerEvent("QBCore:Server:RemoveItem", Config.RepairCost[part], level)
+                                TriggerServerEvent("qb-mechanicjob:server:removePart", part, level)
                                 TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items[Config.RepairCost[part]], "remove")
                             end
                         end, function() -- Cancel

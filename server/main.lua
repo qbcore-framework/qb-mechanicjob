@@ -218,6 +218,13 @@ RegisterNetEvent('qb-vehicletuning:server:CheckForItems', function(part)
     end
 end)
 
+RegisterNetEvent('qb-mechanicjob:server:removePart', function(part, amount)
+    local Player = QBCore.Functions.GetPlayer(source)
+
+    if not Player then return end
+
+    Player.Functions.RemoveItem(Config.RepairCost[part], amount)
+end)
 
 -- Commands
 

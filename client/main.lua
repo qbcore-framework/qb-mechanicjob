@@ -824,9 +824,9 @@ RegisterNetEvent('qb-vehicletuning:client:RepaireeePart', function(part)
         TriggerServerEvent("vehiclemod:server:updatePart", plate, "body", Config.MaxStatusValues[part])
         SetVehicleFixed(veh)
         SetVehicleEngineHealth(veh, enhealth)
-        if GetVehicleFuelLevel(veh) ~= realFuel then 
+        if GetVehicleFuelLevel(veh) ~= realFuel then
             SetVehicleFuelLevel(veh, realFuel)
-        end 
+        end
     else
         TriggerServerEvent("vehiclemod:server:updatePart", plate, part, Config.MaxStatusValues[part])
     end

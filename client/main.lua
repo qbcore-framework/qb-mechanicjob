@@ -819,16 +819,19 @@ RegisterNetEvent('qb-vehicletuning:client:RepaireeePart', function(part)
         TriggerServerEvent("vehiclemod:server:updatePart", plate, "engine", Config.MaxStatusValues[part])
     elseif part == "body" then
         local enhealth = GetVehicleEngineHealth(veh)
+        local realFuel = GetVehicleFuelLevel(veh)
         SetVehicleBodyHealth(veh, Config.MaxStatusValues[part])
         TriggerServerEvent("vehiclemod:server:updatePart", plate, "body", Config.MaxStatusValues[part])
         SetVehicleFixed(veh)
         SetVehicleEngineHealth(veh, enhealth)
+        if GetVehicleFuelLevel(veh) ~= realFuel then 
+            SetVehicleFuelLevel(veh, realFuel)
+        end 
     else
         TriggerServerEvent("vehiclemod:server:updatePart", plate, part, Config.MaxStatusValues[part])
     end
     QBCore.Functions.Notify(Config.ValuesLabels[part].. Lang:t('notifications.repaired'))
 end)
-
 RegisterNetEvent('vehiclemod:client:setVehicleStatus', function(plate, status)
     VehicleStatus[plate] = status
 end)

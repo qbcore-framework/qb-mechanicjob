@@ -717,10 +717,10 @@ local function RepairPart(part)
                     PartsMenu()
                 end)
             end, function()
-                QBCore.Functions.Notify("Repair Cancelled", "error")
+                QBCore.Functions.Notify(Lang:t('notifications.rep_canceled'), "error")
             end)
         else
-            QBCore.Functions.Notify('There Are Not Enough Materials In The Safe', 'error')
+            QBCore.Functions.Notify(Lang:t('notifications.not_materials'), 'error')
         end
     end, "mechanicstash")
 end
@@ -826,7 +826,7 @@ RegisterNetEvent('qb-vehicletuning:client:RepaireeePart', function(part)
     else
         TriggerServerEvent("vehiclemod:server:updatePart", plate, part, Config.MaxStatusValues[part])
     end
-    QBCore.Functions.Notify("The "..Config.ValuesLabels[part].." Is Repaired!")
+    QBCore.Functions.Notify(Config.ValuesLabels[part].. Lang:t('notifications.repaired'))
 end)
 
 RegisterNetEvent('vehiclemod:client:setVehicleStatus', function(plate, status)
@@ -845,19 +845,19 @@ RegisterNetEvent('vehiclemod:client:getVehicleStatus', function()
                     if VehicleStatus[plate] ~= nil then
                         SendStatusMessage(VehicleStatus[plate])
                     else
-                        QBCore.Functions.Notify("Status Unknown", "error")
+                        QBCore.Functions.Notify(Lang:t('notifications.uknown'), "error")
                     end
                 else
-                    QBCore.Functions.Notify("Not A Valid Vehicle", "error")
+                    QBCore.Functions.Notify(Lang:t('notifications.not_valid'), "error")
                 end
             else
-                QBCore.Functions.Notify("You Are Not Close Enough To The Vehicle", "error")
+                QBCore.Functions.Notify(Lang:t('notifications.not_close'), "error")
             end
         else
-            QBCore.Functions.Notify("You Must Be In The Vehicle First", "error")
+            QBCore.Functions.Notify(Lang:t('notifications.veh_first'), "error")
         end
     else
-        QBCore.Functions.Notify("You Must Be Outside The Vehicle", "error")
+        QBCore.Functions.Notify(Lang:t('notifications.outside'), "error")
     end
 end)
 
@@ -868,10 +868,10 @@ RegisterNetEvent('vehiclemod:client:fixEverything', function()
             local plate = QBCore.Functions.GetPlate(veh)
             TriggerServerEvent("vehiclemod:server:fixEverything", plate)
         else
-            QBCore.Functions.Notify("You Are Not The Driver Or On A Bicycle", "error")
+            QBCore.Functions.Notify(Lang:t('notifications.wrong_seat'), "error")
         end
     else
-        QBCore.Functions.Notify("You Are Not In A Vehicle", "error")
+        QBCore.Functions.Notify(Lang:t('notifications.not_vehicle'), "error")
     end
 end)
 
@@ -890,10 +890,10 @@ RegisterNetEvent('vehiclemod:client:setPartLevel', function(part, level)
                 TriggerServerEvent("vehiclemod:server:updatePart", plate, part, level)
             end
         else
-            QBCore.Functions.Notify("You Are Not The Driver Or On A Bicycle", "error")
+            QBCore.Functions.Notify(Lang:t('notifications.wrong_seat'), "error")
         end
     else
-        QBCore.Functions.Notify("You Are Not The Driver Or On A Bicycle", "error")
+        QBCore.Functions.Notify(Lang:t('notifications.wrong_seat'), "error")
     end
 end)
 
@@ -912,7 +912,7 @@ RegisterNetEvent('vehiclemod:client:repairPart', function(part, level, needAmoun
                             lockpickTime = lockpickTime / 10
                         end
                         ScrapAnim(lockpickTime)
-                        QBCore.Functions.Progressbar("repair_advanced", "Repair Vehicle", lockpickTime, false, true, {
+                        QBCore.Functions.Progressbar("repair_advanced", Lang:t('notifications.progress_bar'), lockpickTime, false, true, {
                             disableMovement = true,
                             disableCarMovement = true,
                             disableMouse = false,
@@ -940,22 +940,22 @@ RegisterNetEvent('vehiclemod:client:repairPart', function(part, level, needAmoun
                         end, function() -- Cancel
                             openingDoor = false
                             ClearPedTasks(PlayerPedId())
-                            QBCore.Functions.Notify("Process Canceled", "error")
+                            QBCore.Functions.Notify(Lang:t('notifications.process_canceled'), "error")
                         end)
                     else
-                        QBCore.Functions.Notify("Not A Valid Part", "error")
+                        QBCore.Functions.Notify(Lang:t('notifications.not_part'), "error")
                     end
                 else
-                    QBCore.Functions.Notify("Not A Valid Vehicle", "error")
+                    QBCore.Functions.Notify(Lang:t('notifications.not_valid'), "error")
                 end
             else
-                QBCore.Functions.Notify("You Are Not Close Enough To The Vehicle", "error")
+                QBCore.Functions.Notify(Lang:t('notifications.not_close'), "error")
             end
         else
-            QBCore.Functions.Notify("You Must Be In The Vehicle First", "error")
+            QBCore.Functions.Notify(Lang:t('notifications.veh_first'), "error")
         end
     else
-        QBCore.Functions.Notify("Youre Not In a Vehicle", "error")
+        QBCore.Functions.Notify(Lang:t('notifications.not_vehicle'), "error")
     end
 end)
 

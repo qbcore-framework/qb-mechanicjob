@@ -14,7 +14,7 @@ local Translations = {
         g_vehicle = '[E] Get Vehicle',
         o_menu = '[E] Open Menu',
         work_v = '[E] Work On Vehicle'
-    }, 
+    },
 
     lift_menu = {
         header_menu = 'Vehicle Options',

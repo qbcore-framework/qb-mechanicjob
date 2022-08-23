@@ -71,9 +71,9 @@ local function RegisterDutyTarget()
         return
     end
 
-    local label = "Sign On Duty"
+    local label = Lang:t('labels.sign_in')
     if onDuty then
-        label = "Sign Off Duty"
+        label = Lang:t('labels.sign_off')
     end
 
     if Config.UseTarget then
@@ -138,7 +138,7 @@ local function RegisterStashTarget()
             options = {{
                 type = "client",
                 event = "qb-mechanicjob:client:target:OpenStash",
-                label = "Open Stash",
+                label = Lang:t('labels.o_stash'),
             }},
             distance = 2.0
         })
@@ -154,7 +154,8 @@ local function RegisterStashTarget()
         })
         zone:onPlayerInOut(function (isPointInside)
             if isPointInside then
-                exports['qb-core']:DrawText("[E] Open Stash", 'left')
+                --exports['qb-core']:DrawText("[E] Open Stash", 'left')
+                exports['qb-core']:DrawText(Lang:t('labels.o_stash'), 'left')
             else
                 exports['qb-core']:HideText()
             end
@@ -180,9 +181,9 @@ local function RegisterGarageZone()
         if isPointInside and onDuty then
             local inVehicle = IsPedInAnyVehicle(PlayerPedId())
             if inVehicle then
-                exports['qb-core']:DrawText('[E] Hide Vehicle', 'left')
+                exports['qb-core']:DrawText(Lang:t('labels.h_vehicle'), 'left')
             else
-                exports['qb-core']:DrawText('[E] Get Vehicle', 'left')
+                exports['qb-core']:DrawText(Lang:t('labels.g_vehicle'), 'left')
             end
         else
             exports['qb-core']:HideText()
@@ -215,10 +216,10 @@ function RegisterVehiclePlateZone(id, plate)
     plateZone:onPlayerInOut(function (isPointInside)
         if isPointInside and onDuty then
             if plate.AttachedVehicle then
-                exports['qb-core']:DrawText('[E] Open Menu', 'left')
+                exports['qb-core']:DrawText(Lang:t('labels.o_menu'), 'left')
             else
                 if IsPedInAnyVehicle(PlayerPedId()) then
-                    exports['qb-core']:DrawText('[E] Work On Vehicle', 'left')
+                    exports['qb-core']:DrawText(Lang:t('labels.work_v'), 'left')
                 end
             end
         else
@@ -458,17 +459,17 @@ end
 local function OpenMenu()
     local openMenu = {
         {
-            header = "Vehicle Options",
+            header = Lang:t('lift_menu.header_menu'),
             isMenuHeader = true
         }, {
-            header = "Disconnect Vehicle",
-            txt = "Unattach Vehicle in Lift",
+            header = Lang:t('lift_menu.header_vehdc'),
+            txt = Lang:t('lift_menu.desc_vehdc'),
             params = {
                 event = "qb-mechanicjob:client:UnattachVehicle",
             }
         }, {
-            header = "Check Status",
-            txt = "Check Vehicle Status",
+            header = Lang:t('lift_menu.header_stats'),
+            txt = Lang:t('lift_menu.desc_stats'),
             params = {
                 event = "qb-mechanicjob:client:CheckStatus",
                 args = {
@@ -476,8 +477,8 @@ local function OpenMenu()
                 }
             }
         }, {
-            header = "Vehicle Parts",
-            txt = "Repair Vehicle Parts",
+            header = Lang:t('lift_menu.header_parts'),
+            txt = Lang:t('lift_menu.desc_parts'),
             params = {
                 event = "qb-mechanicjob:client:PartsMenu",
                 args = {
@@ -485,7 +486,7 @@ local function OpenMenu()
                 }
             }
         }, {
-            header = "⬅ Close Menu",
+            header = Lang:t('lift_menu.c_menu'),
             txt = "",
             params = {
                 event = "qb-mechanicjob:client:target:CloseMenu",
@@ -528,7 +529,7 @@ local function PartsMenu()
                 end
                 vehicleMenu[#vehicleMenu+1] = {
                     header = v,
-                    txt = "Status: " .. percentage .. ".0% / 100.0%",
+                    txt = Lang:t('parts_menu.status') .. percentage .. ".0% / 100.0%",
                     params = {
                         event = "qb-mechanicjob:client:NoDamage",
                     }
@@ -536,7 +537,7 @@ local function PartsMenu()
             end
         end
         vehicleMenu[#vehicleMenu+1] = {
-            header = "⬅ Close Menu",
+            header = Lang:t('lift_menu.c_menu'),
             txt = "",
             params = {
                 event = "qb-menu:client:closeMenu"
@@ -552,12 +553,12 @@ local function PartMenu(data)
     local part = data.parts
     local TestMenu1 = {
         {
-            header = "Part Menu",
+            header = Lang:t('parts_menu.menu_header'),
             isMenuHeader = true
         },
         {
             header = ""..partName.."",
-            txt = "Repair : "..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." "..Config.RepairCostAmount[part].costs.."x",
+            txt = Lang:t('parts_menu.repair_op') ..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." "..Config.RepairCostAmount[part].costs.."x",
             params = {
                 event = "qb-mechanicjob:client:RepairPart",
                 args = {
@@ -566,14 +567,14 @@ local function PartMenu(data)
             }
         },
         {
-            header = "⬅ Back Menu",
-            txt = "Back to parts menu",
+            header = Lang:t('parts_menu.b_menu'),
+            txt = Lang:t('parts_menu.d_menu'),
             params = {
                 event = "qb-mechanicjob:client:PartsMenu",
             }
         },
         {
-            header = "⬅ Close Menu",
+            header = Lang:t('parts_menu.c_menu'),
             txt = "",
             params = {
                 event = "qb-menu:client:closeMenu",
@@ -587,18 +588,18 @@ end
 local function NoDamage()
     local noDamage = {
         {
-            header = "No Damage",
+            header = Lang:t('nodamage_menu.header'),
             isMenuHeader = true
         },
         {
-            header = "Back Menu",
-            txt = "There Is No Damage To This Part!",
+            header = Lang:t('nodamage_menu.bh_menu'),
+            txt = Lang:t('nodamage_menu.bd_menu'),
             params = {
                 event = "qb-mechanicjob:client:PartsMenu",
             }
         },
         {
-            header = "⬅ Close Menu",
+            header = Lang:t('nodamage_menu.c_menu'),
             txt = "",
             params = {
                 event = "qb-menu:client:closeMenu",

@@ -214,7 +214,7 @@ RegisterNetEvent('qb-vehicletuning:server:CheckForItems', function(part)
         end
     else
         TriggerClientEvent('QBCore:Notify', src, "You Do Not Have " ..
-            QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"] .. " bij je!", "error")
+            QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"], "error")
     end
 end)
 

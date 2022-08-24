@@ -22,13 +22,13 @@ Config.MaxStatusValues = {
 }
 
 Config.ValuesLabels = {
-    ["engine"] = "Motor",
-    ["body"] = "Body",
-    ["radiator"] = "Radiator",
-    ["axle"] = "Drive Shaft",
-    ["brakes"] = "Brakes",
-    ["clutch"] = "Clutch",
-    ["fuel"] = "Fuel Ttank",
+    ["engine"] = Lang:t('labels.engine'),
+    ["body"] = Lang:t('labels.bodsy'),
+    ["radiator"] = Lang:t('labels.radiator'),
+    ["axle"] = Lang:t('labels.axle'),
+    ["brakes"] = Lang:t('labels.brakes'),
+    ["clutch"] = Lang:t('labels.clutch'),
+    ["fuel"] = Lang:t('labels.fuel'),
 }
 
 Config.RepairCost = {

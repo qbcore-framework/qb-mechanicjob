@@ -154,7 +154,6 @@ local function RegisterStashTarget()
         })
         zone:onPlayerInOut(function (isPointInside)
             if isPointInside then
-                --exports['qb-core']:DrawText("[E] Open Stash", 'left')
                 exports['qb-core']:DrawText(Lang:t('labels.o_stash'), 'left')
             else
                 exports['qb-core']:HideText()
@@ -558,7 +557,7 @@ local function PartMenu(data)
         },
         {
             header = ""..partName.."",
-            txt = Lang:t('parts_menu.repair_op') ..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." "..Config.RepairCostAmount[part].costs.."x",
+            txt = Lang:t('parts_menu.repair_op')..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." "..Config.RepairCostAmount[part].costs.."x",
             params = {
                 event = "qb-mechanicjob:client:RepairPart",
                 args = {
@@ -830,7 +829,7 @@ RegisterNetEvent('qb-vehicletuning:client:RepaireeePart', function(part)
     else
         TriggerServerEvent("vehiclemod:server:updatePart", plate, part, Config.MaxStatusValues[part])
     end
-    QBCore.Functions.Notify(Config.ValuesLabels[part].. Lang:t('notifications.repaired'))
+    QBCore.Functions.Notify(Config.ValuesLabels[part]..Lang:t('notifications.repaired'))
 end)
 RegisterNetEvent('vehiclemod:client:setVehicleStatus', function(plate, status)
     VehicleStatus[plate] = status

@@ -87,7 +87,7 @@ Config.Plates = {
         AttachedVehicle = nil,
     },
     [2] = {
-        coords = vector4(-326.78, -144.82, 39.06, 70),
+        coords = vector4(-327.91, -144.34, 38.86, 70.34),
         boxData = {
             heading = 249,
             length = 6.5,

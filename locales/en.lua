@@ -13,7 +13,10 @@ local Translations = {
         h_vehicle = '[E] Hide Vehicle',
         g_vehicle = '[E] Get Vehicle',
         o_menu = '[E] Open Menu',
-        work_v = '[E] Work On Vehicle'
+        work_v = '[E] Work On Vehicle',
+        progress_bar = 'Repairing...',
+        veh_status = 'Vehicle Status:',
+        job_blip = 'Autocare Mechanic',
     },
 
     lift_menu = {
@@ -58,7 +61,8 @@ local Translations = {
         not_vehicle = 'You are not in a vehicle',
         progress_bar = 'Repairing vehicle..',
         process_canceled = 'Proccess canceled',
-        not_part = 'Not a valid part'
+        not_part = 'Not a valid part',
+        partrep ='The %{value} Is Repaired!',
     }
 }
 

@@ -71,9 +71,9 @@ local function RegisterDutyTarget()
         return
     end
 
-    local label = "Sign On Duty"
+    local label = Lang:t('labels.sign_in')
     if onDuty then
-        label = "Sign Off Duty"
+        label = Lang:t('labels.sign_off')
     end
 
     if Config.UseTarget then
@@ -138,7 +138,7 @@ local function RegisterStashTarget()
             options = {{
                 type = "client",
                 event = "qb-mechanicjob:client:target:OpenStash",
-                label = "Open Stash",
+                label = Lang:t('labels.o_stash'),
             }},
             distance = 2.0
         })
@@ -154,7 +154,7 @@ local function RegisterStashTarget()
         })
         zone:onPlayerInOut(function (isPointInside)
             if isPointInside then
-                exports['qb-core']:DrawText("[E] Open Stash", 'left')
+                exports['qb-core']:DrawText(Lang:t('labels.o_stash'), 'left')
             else
                 exports['qb-core']:HideText()
             end
@@ -180,9 +180,9 @@ local function RegisterGarageZone()
         if isPointInside and onDuty then
             local inVehicle = IsPedInAnyVehicle(PlayerPedId())
             if inVehicle then
-                exports['qb-core']:DrawText('[E] Hide Vehicle', 'left')
+                exports['qb-core']:DrawText(Lang:t('labels.h_vehicle'), 'left')
             else
-                exports['qb-core']:DrawText('[E] Get Vehicle', 'left')
+                exports['qb-core']:DrawText(Lang:t('labels.g_vehicle'), 'left')
             end
         else
             exports['qb-core']:HideText()
@@ -215,10 +215,10 @@ function RegisterVehiclePlateZone(id, plate)
     plateZone:onPlayerInOut(function (isPointInside)
         if isPointInside and onDuty then
             if plate.AttachedVehicle then
-                exports['qb-core']:DrawText('[E] Open Menu', 'left')
+                exports['qb-core']:DrawText(Lang:t('labels.o_menu'), 'left')
             else
                 if IsPedInAnyVehicle(PlayerPedId()) then
-                    exports['qb-core']:DrawText('[E] Work On Vehicle', 'left')
+                    exports['qb-core']:DrawText(Lang:t('labels.work_v'), 'left')
                 end
             end
         else
@@ -458,17 +458,17 @@ end
 local function OpenMenu()
     local openMenu = {
         {
-            header = "Vehicle Options",
+            header = Lang:t('lift_menu.header_menu'),
             isMenuHeader = true
         }, {
-            header = "Disconnect Vehicle",
-            txt = "Unattach Vehicle in Lift",
+            header = Lang:t('lift_menu.header_vehdc'),
+            txt = Lang:t('lift_menu.desc_vehdc'),
             params = {
                 event = "qb-mechanicjob:client:UnattachVehicle",
             }
         }, {
-            header = "Check Status",
-            txt = "Check Vehicle Status",
+            header = Lang:t('lift_menu.header_stats'),
+            txt = Lang:t('lift_menu.desc_stats'),
             params = {
                 event = "qb-mechanicjob:client:CheckStatus",
                 args = {
@@ -476,8 +476,8 @@ local function OpenMenu()
                 }
             }
         }, {
-            header = "Vehicle Parts",
-            txt = "Repair Vehicle Parts",
+            header = Lang:t('lift_menu.header_parts'),
+            txt = Lang:t('lift_menu.desc_parts'),
             params = {
                 event = "qb-mechanicjob:client:PartsMenu",
                 args = {
@@ -485,7 +485,7 @@ local function OpenMenu()
                 }
             }
         }, {
-            header = "⬅ Close Menu",
+            header = Lang:t('lift_menu.c_menu'),
             txt = "",
             params = {
                 event = "qb-mechanicjob:client:target:CloseMenu",
@@ -528,7 +528,7 @@ local function PartsMenu()
                 end
                 vehicleMenu[#vehicleMenu+1] = {
                     header = v,
-                    txt = "Status: " .. percentage .. ".0% / 100.0%",
+                    txt = Lang:t('parts_menu.status') .. percentage .. ".0% / 100.0%",
                     params = {
                         event = "qb-mechanicjob:client:NoDamage",
                     }
@@ -536,7 +536,7 @@ local function PartsMenu()
             end
         end
         vehicleMenu[#vehicleMenu+1] = {
-            header = "⬅ Close Menu",
+            header = Lang:t('lift_menu.c_menu'),
             txt = "",
             params = {
                 event = "qb-menu:client:closeMenu"
@@ -552,12 +552,12 @@ local function PartMenu(data)
     local part = data.parts
     local TestMenu1 = {
         {
-            header = "Part Menu",
+            header = Lang:t('parts_menu.menu_header'),
             isMenuHeader = true
         },
         {
             header = ""..partName.."",
-            txt = "Repair : "..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." "..Config.RepairCostAmount[part].costs.."x",
+            txt = Lang:t('parts_menu.repair_op')..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." "..Config.RepairCostAmount[part].costs.."x",
             params = {
                 event = "qb-mechanicjob:client:RepairPart",
                 args = {
@@ -566,14 +566,14 @@ local function PartMenu(data)
             }
         },
         {
-            header = "⬅ Back Menu",
-            txt = "Back to parts menu",
+            header = Lang:t('parts_menu.b_menu'),
+            txt = Lang:t('parts_menu.d_menu'),
             params = {
                 event = "qb-mechanicjob:client:PartsMenu",
             }
         },
         {
-            header = "⬅ Close Menu",
+            header = Lang:t('parts_menu.c_menu'),
             txt = "",
             params = {
                 event = "qb-menu:client:closeMenu",
@@ -587,18 +587,18 @@ end
 local function NoDamage()
     local noDamage = {
         {
-            header = "No Damage",
+            header = Lang:t('nodamage_menu.header'),
             isMenuHeader = true
         },
         {
-            header = "Back Menu",
-            txt = "There Is No Damage To This Part!",
+            header = Lang:t('nodamage_menu.bh_menu'),
+            txt = Lang:t('nodamage_menu.bd_menu'),
             params = {
                 event = "qb-mechanicjob:client:PartsMenu",
             }
         },
         {
-            header = "⬅ Close Menu",
+            header = Lang:t('nodamage_menu.c_menu'),
             txt = "",
             params = {
                 event = "qb-menu:client:closeMenu",
@@ -716,10 +716,10 @@ local function RepairPart(part)
                     PartsMenu()
                 end)
             end, function()
-                QBCore.Functions.Notify("Repair Cancelled", "error")
+                QBCore.Functions.Notify(Lang:t('notifications.rep_canceled'), "error")
             end)
         else
-            QBCore.Functions.Notify('There Are Not Enough Materials In The Safe', 'error')
+            QBCore.Functions.Notify(Lang:t('notifications.not_materials'), 'error')
         end
     end, "mechanicstash")
 end
@@ -818,16 +818,19 @@ RegisterNetEvent('qb-vehicletuning:client:RepaireeePart', function(part)
         TriggerServerEvent("vehiclemod:server:updatePart", plate, "engine", Config.MaxStatusValues[part])
     elseif part == "body" then
         local enhealth = GetVehicleEngineHealth(veh)
+        local realFuel = GetVehicleFuelLevel(veh)
         SetVehicleBodyHealth(veh, Config.MaxStatusValues[part])
         TriggerServerEvent("vehiclemod:server:updatePart", plate, "body", Config.MaxStatusValues[part])
         SetVehicleFixed(veh)
         SetVehicleEngineHealth(veh, enhealth)
+        if GetVehicleFuelLevel(veh) ~= realFuel then
+            SetVehicleFuelLevel(veh, realFuel)
+        end
     else
         TriggerServerEvent("vehiclemod:server:updatePart", plate, part, Config.MaxStatusValues[part])
     end
-    QBCore.Functions.Notify("The "..Config.ValuesLabels[part].." Is Repaired!")
+    QBCore.Functions.Notify(Config.ValuesLabels[part]..Lang:t('notifications.repaired'))
 end)
-
 RegisterNetEvent('vehiclemod:client:setVehicleStatus', function(plate, status)
     VehicleStatus[plate] = status
 end)
@@ -844,19 +847,19 @@ RegisterNetEvent('vehiclemod:client:getVehicleStatus', function()
                     if VehicleStatus[plate] ~= nil then
                         SendStatusMessage(VehicleStatus[plate])
                     else
-                        QBCore.Functions.Notify("Status Unknown", "error")
+                        QBCore.Functions.Notify(Lang:t('notifications.uknown'), "error")
                     end
                 else
-                    QBCore.Functions.Notify("Not A Valid Vehicle", "error")
+                    QBCore.Functions.Notify(Lang:t('notifications.not_valid'), "error")
                 end
             else
-                QBCore.Functions.Notify("You Are Not Close Enough To The Vehicle", "error")
+                QBCore.Functions.Notify(Lang:t('notifications.not_close'), "error")
             end
         else
-            QBCore.Functions.Notify("You Must Be In The Vehicle First", "error")
+            QBCore.Functions.Notify(Lang:t('notifications.veh_first'), "error")
         end
     else
-        QBCore.Functions.Notify("You Must Be Outside The Vehicle", "error")
+        QBCore.Functions.Notify(Lang:t('notifications.outside'), "error")
     end
 end)
 
@@ -867,10 +870,10 @@ RegisterNetEvent('vehiclemod:client:fixEverything', function()
             local plate = QBCore.Functions.GetPlate(veh)
             TriggerServerEvent("vehiclemod:server:fixEverything", plate)
         else
-            QBCore.Functions.Notify("You Are Not The Driver Or On A Bicycle", "error")
+            QBCore.Functions.Notify(Lang:t('notifications.wrong_seat'), "error")
         end
     else
-        QBCore.Functions.Notify("You Are Not In A Vehicle", "error")
+        QBCore.Functions.Notify(Lang:t('notifications.not_vehicle'), "error")
     end
 end)
 
@@ -889,10 +892,10 @@ RegisterNetEvent('vehiclemod:client:setPartLevel', function(part, level)
                 TriggerServerEvent("vehiclemod:server:updatePart", plate, part, level)
             end
         else
-            QBCore.Functions.Notify("You Are Not The Driver Or On A Bicycle", "error")
+            QBCore.Functions.Notify(Lang:t('notifications.wrong_seat'), "error")
         end
     else
-        QBCore.Functions.Notify("You Are Not The Driver Or On A Bicycle", "error")
+        QBCore.Functions.Notify(Lang:t('notifications.wrong_seat'), "error")
     end
 end)
 
@@ -911,7 +914,7 @@ RegisterNetEvent('vehiclemod:client:repairPart', function(part, level, needAmoun
                             lockpickTime = lockpickTime / 10
                         end
                         ScrapAnim(lockpickTime)
-                        QBCore.Functions.Progressbar("repair_advanced", "Repair Vehicle", lockpickTime, false, true, {
+                        QBCore.Functions.Progressbar("repair_advanced", Lang:t('notifications.progress_bar'), lockpickTime, false, true, {
                             disableMovement = true,
                             disableCarMovement = true,
                             disableMouse = false,
@@ -929,32 +932,32 @@ RegisterNetEvent('vehiclemod:client:repairPart', function(part, level, needAmoun
                                 SetVehicleFixed(veh)
                                 SetVehicleEngineHealth(veh, enhealth)
                                 TriggerServerEvent("vehiclemod:server:updatePart", plate, part, GetVehicleBodyHealth(veh))
-                                TriggerServerEvent("QBCore:Server:RemoveItem", Config.RepairCost[part], needAmount)
+                                TriggerServerEvent("qb-mechanicjob:server:removePart", part, needAmount)
                                 TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items[Config.RepairCost[part]], "remove")
                             elseif part ~= "engine" then
                                 TriggerServerEvent("vehiclemod:server:updatePart", plate, part, GetVehicleStatus(plate, part) + level)
-                                TriggerServerEvent("QBCore:Server:RemoveItem", Config.RepairCost[part], level)
+                                TriggerServerEvent("qb-mechanicjob:server:removePart", part, level)
                                 TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items[Config.RepairCost[part]], "remove")
                             end
                         end, function() -- Cancel
                             openingDoor = false
                             ClearPedTasks(PlayerPedId())
-                            QBCore.Functions.Notify("Process Canceled", "error")
+                            QBCore.Functions.Notify(Lang:t('notifications.process_canceled'), "error")
                         end)
                     else
-                        QBCore.Functions.Notify("Not A Valid Part", "error")
+                        QBCore.Functions.Notify(Lang:t('notifications.not_part'), "error")
                     end
                 else
-                    QBCore.Functions.Notify("Not A Valid Vehicle", "error")
+                    QBCore.Functions.Notify(Lang:t('notifications.not_valid'), "error")
                 end
             else
-                QBCore.Functions.Notify("You Are Not Close Enough To The Vehicle", "error")
+                QBCore.Functions.Notify(Lang:t('notifications.not_close'), "error")
             end
         else
-            QBCore.Functions.Notify("You Must Be In The Vehicle First", "error")
+            QBCore.Functions.Notify(Lang:t('notifications.veh_first'), "error")
         end
     else
-        QBCore.Functions.Notify("Youre Not In a Vehicle", "error")
+        QBCore.Functions.Notify(Lang:t('notifications.not_vehicle'), "error")
     end
 end)
 

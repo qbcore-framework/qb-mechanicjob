@@ -208,16 +208,22 @@ RegisterNetEvent('qb-vehicletuning:server:CheckForItems', function(part)
                 Wait(500)
             end
         else
-            TriggerClientEvent('QBCore:Notify', src,
-                "You Dont Have Enough " .. QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"] .. " (min. " ..
+            TriggerClientEvent('QBCore:Notify', src, Lang:t('notifications.not_enough') .. QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"] .. " (min. " ..
                     Config.RepairCostAmount[part].costs .. "x)", "error")
         end
     else
-        TriggerClientEvent('QBCore:Notify', src, "You Do Not Have " ..
-            QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"] .. " bij je!", "error")
+        TriggerClientEvent('QBCore:Notify', src, Lang:t('notifications.not_have') ..
+            QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"], "error")
     end
 end)
 
+RegisterNetEvent('qb-mechanicjob:server:removePart', function(part, amount)
+    local Player = QBCore.Functions.GetPlayer(source)
+
+    if not Player then return end
+
+    Player.Functions.RemoveItem(Config.RepairCost[part], amount)
+end)
 
 -- Commands
 

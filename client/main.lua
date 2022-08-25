@@ -450,7 +450,7 @@ local function SendStatusMessage(statusList)
     if statusList ~= nil then
         TriggerEvent('chat:addMessage', {
             template = '<div class="chat-message normal"><div class="chat-message-body"><strong>{0}:</strong><br><br> <strong>'.. Config.ValuesLabels["engine"] ..' (engine):</strong> {1} <br><strong>'.. Config.ValuesLabels["body"] ..' (body):</strong> {2} <br><strong>'.. Config.ValuesLabels["radiator"] ..' (radiator):</strong> {3} <br><strong>'.. Config.ValuesLabels["axle"] ..' (axle):</strong> {4}<br><strong>'.. Config.ValuesLabels["brakes"] ..' (brakes):</strong> {5}<br><strong>'.. Config.ValuesLabels["clutch"] ..' (clutch):</strong> {6}<br><strong>'.. Config.ValuesLabels["fuel"] ..' (fuel):</strong> {7}</div></div>',
-            args = {'Vehicle Status', round(statusList["engine"]) .. "/" .. Config.MaxStatusValues["engine"] .. " ("..QBCore.Shared.Items["advancedrepairkit"]["label"]..")", round(statusList["body"]) .. "/" .. Config.MaxStatusValues["body"] .. " ("..QBCore.Shared.Items[Config.RepairCost["body"]]["label"]..")", round(statusList["radiator"]) .. "/" .. Config.MaxStatusValues["radiator"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["radiator"]]["label"]..")", round(statusList["axle"]) .. "/" .. Config.MaxStatusValues["axle"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["axle"]]["label"]..")", round(statusList["brakes"]) .. "/" .. Config.MaxStatusValues["brakes"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["brakes"]]["label"]..")", round(statusList["clutch"]) .. "/" .. Config.MaxStatusValues["clutch"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["clutch"]]["label"]..")", round(statusList["fuel"]) .. "/" .. Config.MaxStatusValues["fuel"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["fuel"]]["label"]..")"}
+            args = {Lang:t('labels.veh_status'), round(statusList["engine"]) .. "/" .. Config.MaxStatusValues["engine"] .. " ("..QBCore.Shared.Items["advancedrepairkit"]["label"]..")", round(statusList["body"]) .. "/" .. Config.MaxStatusValues["body"] .. " ("..QBCore.Shared.Items[Config.RepairCost["body"]]["label"]..")", round(statusList["radiator"]) .. "/" .. Config.MaxStatusValues["radiator"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["radiator"]]["label"]..")", round(statusList["axle"]) .. "/" .. Config.MaxStatusValues["axle"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["axle"]]["label"]..")", round(statusList["brakes"]) .. "/" .. Config.MaxStatusValues["brakes"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["brakes"]]["label"]..")", round(statusList["clutch"]) .. "/" .. Config.MaxStatusValues["clutch"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["clutch"]]["label"]..")", round(statusList["fuel"]) .. "/" .. Config.MaxStatusValues["fuel"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["fuel"]]["label"]..")"}
         })
     end
 end
@@ -697,7 +697,7 @@ local function RepairPart(part)
         end
         if hasitem and countitem >= PartData.costs then
             TriggerEvent('animations:client:EmoteCommandStart', {"mechanic"})
-            QBCore.Functions.Progressbar("repair_part", "Repairing " ..Config.ValuesLabels[part], math.random(5000, 10000), false, true, {
+            QBCore.Functions.Progressbar("repair_part", Lang:t('labels.progress_bar') ..Config.ValuesLabels[part], math.random(5000, 10000), false, true, {
                 disableMovement = true,
                 disableCarMovement = true,
                 disableMouse = false,
@@ -829,7 +829,7 @@ RegisterNetEvent('qb-vehicletuning:client:RepaireeePart', function(part)
     else
         TriggerServerEvent("vehiclemod:server:updatePart", plate, part, Config.MaxStatusValues[part])
     end
-    QBCore.Functions.Notify(Config.ValuesLabels[part]..Lang:t('notifications.repaired'))
+    QBCore.Functions.Notify(Lang:t('notifications.partrep', {value = Config.ValuesLabels[part]}))
 end)
 RegisterNetEvent('vehiclemod:client:setVehicleStatus', function(plate, status)
     VehicleStatus[plate] = status
@@ -994,7 +994,7 @@ CreateThread(function()
     SetBlipColour(Blip, 0)
     SetBlipAlpha(Blip, 0.7)
     BeginTextCommandSetBlipName("STRING")
-    AddTextComponentSubstringPlayerName("Autocare Mechanic")
+    AddTextComponentSubstringPlayerName(Lang:t('labels.job_blip'))
     EndTextCommandSetBlipName(Blip)
 
     RegisterGarageZone()

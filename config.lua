@@ -22,13 +22,13 @@ Config.MaxStatusValues = {
 }
 
 Config.ValuesLabels = {
-    ["engine"] = "Motor",
-    ["body"] = "Body",
-    ["radiator"] = "Radiator",
-    ["axle"] = "Drive Shaft",
-    ["brakes"] = "Brakes",
-    ["clutch"] = "Clutch",
-    ["fuel"] = "Fuel Ttank",
+    ["engine"] = Lang:t('labels.engine'),
+    ["body"] = Lang:t('labels.bodsy'),
+    ["radiator"] = Lang:t('labels.radiator'),
+    ["axle"] = Lang:t('labels.axle'),
+    ["brakes"] = Lang:t('labels.brakes'),
+    ["clutch"] = Lang:t('labels.clutch'),
+    ["fuel"] = Lang:t('labels.fuel'),
 }
 
 Config.RepairCost = {
@@ -87,7 +87,7 @@ Config.Plates = {
         AttachedVehicle = nil,
     },
     [2] = {
-        coords = vector4(-326.78, -144.82, 39.06, 70),
+        coords = vector4(-327.91, -144.34, 38.86, 70.34),
         boxData = {
             heading = 249,
             length = 6.5,

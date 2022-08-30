@@ -28,7 +28,7 @@ Config.ValuesLabels = {
     ["axle"] = "Drive Shaft",
     ["brakes"] = "Brakes",
     ["clutch"] = "Clutch",
-    ["fuel"] = "Fuel Ttank",
+    ["fuel"] = "Fuel Tank",
 }
 
 Config.RepairCost = {
@@ -39,6 +39,8 @@ Config.RepairCost = {
     ["clutch"] = "aluminum",
     ["fuel"] = "plastic",
 }
+
+Config.AuthorizedJobs = {'mechanic', 'bennys'}
 
 Config.RepairCostAmount = {
     ["engine"] = {

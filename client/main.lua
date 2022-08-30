@@ -47,6 +47,17 @@ exports('SetVehicleStatus', SetVehicleStatus)
 
 -- Functions
 
+local function IsAuthorized(pjob)
+    local retval = false
+    for _, job in pairs(Config.AuthorizedJobs) do
+        if job == pjob then
+            retval = true
+            break
+        end
+    end
+    return retval
+end
+
 local function DeleteTarget(id)
     if Config.UseTarget then
         exports['qb-target']:RemoveZone(id)
@@ -67,7 +78,7 @@ local function RegisterDutyTarget()
         return
     end
 
-    if PlayerJob.name ~= "mechanic" then
+    if not IsAuthorized(PlayerJob.name) then
         return
     end
 
@@ -109,6 +120,7 @@ local function RegisterDutyTarget()
             end
 
             isInsideDutyZone = isPointInside
+            print(PlayerJob.name)
         end)
 
         Config.Targets[dutyTargetBoxID] = {created = true, zone = zone}
@@ -123,7 +135,7 @@ local function RegisterStashTarget()
         return
     end
 
-    if PlayerJob.name ~= "mechanic" then
+    if not IsAuthorized(PlayerJob.name) then
         return
     end
 
@@ -154,6 +166,7 @@ local function RegisterStashTarget()
         })
         zone:onPlayerInOut(function (isPointInside)
             if isPointInside then
+                --exports['qb-core']:DrawText("[E] Open Stash", 'left')
                 exports['qb-core']:DrawText(Lang:t('labels.o_stash'), 'left')
             else
                 exports['qb-core']:HideText()
@@ -557,7 +570,7 @@ local function PartMenu(data)
         },
         {
             header = ""..partName.."",
-            txt = Lang:t('parts_menu.repair_op')..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." "..Config.RepairCostAmount[part].costs.."x",
+            txt = Lang:t('parts_menu.repair_op') ..QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"].." "..Config.RepairCostAmount[part].costs.."x",
             params = {
                 event = "qb-mechanicjob:client:RepairPart",
                 args = {
@@ -761,7 +774,7 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     QBCore.Functions.GetPlayerData(function(PlayerData)
         PlayerJob = PlayerData.job
         if PlayerData.job.onduty then
-            if PlayerData.job.name == "mechanic" then
+            if IsAuthorized[PlayerJob.name] then
                 TriggerServerEvent("QBCore:ToggleDuty")
             end
         end
@@ -829,8 +842,9 @@ RegisterNetEvent('qb-vehicletuning:client:RepaireeePart', function(part)
     else
         TriggerServerEvent("vehiclemod:server:updatePart", plate, part, Config.MaxStatusValues[part])
     end
-    QBCore.Functions.Notify(Config.ValuesLabels[part]..Lang:t('notifications.repaired'))
+    QBCore.Functions.Notify(Config.ValuesLabels[part].. Lang:t('notifications.repaired'))
 end)
+
 RegisterNetEvent('vehiclemod:client:setVehicleStatus', function(plate, status)
     VehicleStatus[plate] = status
 end)
@@ -1006,8 +1020,7 @@ CreateThread(function()
         wait = 500
         SetClosestPlate()
 
-        if PlayerJob.name == "mechanic" then
-
+        if IsAuthorized(PlayerJob.name) then
             if isInsideDutyZone then
                 wait = 0
                 if IsControlJustPressed(0, 38) then

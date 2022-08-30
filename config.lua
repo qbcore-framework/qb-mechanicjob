@@ -11,6 +11,8 @@ Config.AuthorizedIds = {
     -- "insertcitizenidhere",
 }
 
+Config.AuthorizedJobs = {'mechanic', 'bennys'}
+
 Config.MaxStatusValues = {
     ["engine"] = 1000.0,
     ["body"] = 1000.0,

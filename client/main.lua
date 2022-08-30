@@ -28,6 +28,17 @@ local function GetVehicleStatusList(plate)
     return retval
 end
 
+local function IsAuthorized(pjob)
+    local retval = false
+    for _, job in pairs(Config.AuthorizedJobs) do
+        if job == pjob then
+            retval = true
+            break
+        end
+    end
+    return retval
+end
+
 local function GetVehicleStatus(plate, part)
     local retval = nil
     if VehicleStatus[plate] ~= nil then
@@ -67,7 +78,7 @@ local function RegisterDutyTarget()
         return
     end
 
-    if PlayerJob.name ~= "mechanic" then
+    if not IsAuthorized(PlayerJob.name) then
         return
     end
 
@@ -123,7 +134,7 @@ local function RegisterStashTarget()
         return
     end
 
-    if PlayerJob.name ~= "mechanic" then
+    if not IsAuthorized(PlayerJob.name) then
         return
     end
 
@@ -761,7 +772,7 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     QBCore.Functions.GetPlayerData(function(PlayerData)
         PlayerJob = PlayerData.job
         if PlayerData.job.onduty then
-            if PlayerData.job.name == "mechanic" then
+            if IsAuthorized(PlayerJob.name) then
                 TriggerServerEvent("QBCore:ToggleDuty")
             end
         end
@@ -1006,7 +1017,7 @@ CreateThread(function()
         wait = 500
         SetClosestPlate()
 
-        if PlayerJob.name == "mechanic" then
+        if IsAuthorized(PlayerJob.name) then
 
             if isInsideDutyZone then
                 wait = 0

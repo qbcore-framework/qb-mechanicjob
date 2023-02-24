@@ -112,6 +112,7 @@ CreateThread(function()
                             local amount = round(DrivingDistance[plate] / 1000, -2)
 
                             TriggerEvent('hud:client:UpdateDrivingMeters', true, amount)
+                            Wait(60000) -- Wait However long youd like this is Every Minute and then will Update Driving Distance every Minute (60 seconds)
                             TriggerServerEvent('qb-vehicletuning:server:UpdateDrivingDistance', DrivingDistance[plate], plate)
                         end
                     else

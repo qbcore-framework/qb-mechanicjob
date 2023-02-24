@@ -140,9 +140,9 @@ Config.MinimalMetersForDamage = {
 }
 
 Config.Damages = {
-    ["radiator"] = "Radiator",
-    ["axle"] = "Drive Shaft",
-    ["brakes"] = "Brakes",
-    ["clutch"] = "Clutch",
-    ["fuel"] = "Fuel Tank",
+    ["radiator"] = Lang:t('labels.radiator'),
+    ["axle"] = Lang:t('labels.axle'),
+    ["brakes"] = Lang:t('labels.brakes'),
+    ["clutch"] = Lang:t('labels.clutch'),
+    ["fuel"] = Lang:t('labels.fuel'),
 }

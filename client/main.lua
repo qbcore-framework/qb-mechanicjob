@@ -217,7 +217,7 @@ function RegisterVehiclePlateZone(id, plate)
             if plate.AttachedVehicle then
                 exports['qb-core']:DrawText(Lang:t('labels.o_menu'), 'left')
             else
-                if IsPedInAnyVehicle(PlayerPedId()) then
+                if IsPedInAnyVehicle(PlayerPedId(), false) then
                     exports['qb-core']:DrawText(Lang:t('labels.work_v'), 'left')
                 end
             end
@@ -449,7 +449,7 @@ end
 local function SendStatusMessage(statusList)
     if statusList ~= nil then
         TriggerEvent('chat:addMessage', {
-            template = '<div class="chat-message normal"><div class="chat-message-body"><strong>{0}:</strong><br><br> <strong>'.. Config.ValuesLabels["engine"] ..' (engine):</strong> {1} <br><strong>'.. Config.ValuesLabels["body"] ..' (body):</strong> {2} <br><strong>'.. Config.ValuesLabels["radiator"] ..' (radiator):</strong> {3} <br><strong>'.. Config.ValuesLabels["axle"] ..' (axle):</strong> {4}<br><strong>'.. Config.ValuesLabels["brakes"] ..' (brakes):</strong> {5}<br><strong>'.. Config.ValuesLabels["clutch"] ..' (clutch):</strong> {6}<br><strong>'.. Config.ValuesLabels["fuel"] ..' (fuel):</strong> {7}</div></div>',
+            template = '<div class="chat-message normal"><div class="chat-message-body"><strong>{0}:</strong><br><br> <strong>'.. Lang:t('parts.engine') ..' (engine):</strong> {1} <br><strong>'.. Lang:t('parts.body') ..' (body):</strong> {2} <br><strong>'.. Lang:t('parts.radiator') ..' (radiator):</strong> {3} <br><strong>'.. Lang:t('parts.axle') ..' (axle):</strong> {4}<br><strong>'.. Lang:t('parts.brakes') ..' (brakes):</strong> {5}<br><strong>'.. Lang:t('parts.clutch') ..' (clutch):</strong> {6}<br><strong>'.. Lang:t('parts.fuel') ..' (fuel):</strong> {7}</div></div>',
             args = {Lang:t('labels.veh_status'), round(statusList["engine"]) .. "/" .. Config.MaxStatusValues["engine"] .. " ("..QBCore.Shared.Items["advancedrepairkit"]["label"]..")", round(statusList["body"]) .. "/" .. Config.MaxStatusValues["body"] .. " ("..QBCore.Shared.Items[Config.RepairCost["body"]]["label"]..")", round(statusList["radiator"]) .. "/" .. Config.MaxStatusValues["radiator"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["radiator"]]["label"]..")", round(statusList["axle"]) .. "/" .. Config.MaxStatusValues["axle"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["axle"]]["label"]..")", round(statusList["brakes"]) .. "/" .. Config.MaxStatusValues["brakes"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["brakes"]]["label"]..")", round(statusList["clutch"]) .. "/" .. Config.MaxStatusValues["clutch"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["clutch"]]["label"]..")", round(statusList["fuel"]) .. "/" .. Config.MaxStatusValues["fuel"] .. ".0 ("..QBCore.Shared.Items[Config.RepairCost["fuel"]]["label"]..")"}
         })
     end
@@ -504,7 +504,7 @@ local function PartsMenu()
                 isMenuHeader = true
             }
         }
-        for k,v in pairs(Config.ValuesLabels) do
+        for k,v in pairs(Config.Parts) do
             if math.ceil(VehicleStatus[plate][k]) ~= Config.MaxStatusValues[k] then
                 local percentage = math.ceil(VehicleStatus[plate][k])
                 if percentage > 100 then
@@ -512,7 +512,7 @@ local function PartsMenu()
                 end
                 vehicleMenu[#vehicleMenu+1] = {
                     header = v,
-                    txt = "Status: " .. percentage .. ".0% / 100.0%",
+                    txt = Lang:t('parts_menu.status') .. percentage .. ".0% / 100.0%",
                     params = {
                         event = "qb-mechanicjob:client:PartMenu",
                         args = {
@@ -665,7 +665,7 @@ local function VehicleList()
         }
     end
     vehicleMenu[#vehicleMenu+1] = {
-        header = "⬅ Close Menu",
+        header = Lang:t('nodamage_menu.c_menu'),
         txt = "",
         params = {
             event = "qb-menu:client:closeMenu"
@@ -697,7 +697,7 @@ local function RepairPart(part)
         end
         if hasitem and countitem >= PartData.costs then
             TriggerEvent('animations:client:EmoteCommandStart', {"mechanic"})
-            QBCore.Functions.Progressbar("repair_part", Lang:t('labels.progress_bar') ..Config.ValuesLabels[part], math.random(5000, 10000), false, true, {
+            QBCore.Functions.Progressbar("repair_part", Lang:t('labels.progress_bar') ..Lang:t(part), math.random(5000, 10000), false, true, {
                 disableMovement = true,
                 disableCarMovement = true,
                 disableMouse = false,
@@ -829,7 +829,7 @@ RegisterNetEvent('qb-vehicletuning:client:RepaireeePart', function(part)
     else
         TriggerServerEvent("vehiclemod:server:updatePart", plate, part, Config.MaxStatusValues[part])
     end
-    QBCore.Functions.Notify(Lang:t('notifications.partrep', {value = Config.ValuesLabels[part]}))
+    QBCore.Functions.Notify(Lang:t('notifications.partrep', {value = Lang:t(part)}))
 end)
 RegisterNetEvent('vehiclemod:client:setVehicleStatus', function(plate, status)
     VehicleStatus[plate] = status

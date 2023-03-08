@@ -1,12 +1,15 @@
 local Translations = {
-    labels = {
+    parts = {
         engine = 'Motor',
-        bodsy = 'Body',
+        body = 'Body',
         radiator = 'Radiator',
         axle = 'Drive Shaft',
         brakes = 'Brakes',
         clutch = 'Clutch',
         fuel = 'Fuel tank',
+    },
+
+    labels = {
         sign_in = 'Sign In',
         sign_off = 'Sign Off',
         o_stash = '[E] Open Stash',
@@ -17,6 +20,13 @@ local Translations = {
         progress_bar = 'Repairing...',
         veh_status = 'Vehicle Status:',
         job_blip = 'Autocare Mechanic',
+    },
+
+    vehicles = {
+        flatbed = "Flatbed",
+        towtruck = "Towtruck",
+        minivan = "Minivan (Rental Car)",
+        blista = "Blista",
     },
 
     lift_menu = {

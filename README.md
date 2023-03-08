@@ -1,4 +1,5 @@
 # qb-mechanicjob
+
 Mechanic Job for QB-Core Framework :mechanic:
 
 # License
@@ -19,29 +20,34 @@ Mechanic Job for QB-Core Framework :mechanic:
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>
 
-
 ## Dependencies
-- [qb-core](https://github.com/qbcore-framework/qb-core)
-- [qb-inventory](https://github.com/qbcore-framework/qb-inventory) - 
+
+-   [qb-core](https://github.com/qbcore-framework/qb-core)
+-   [qb-inventory](https://github.com/qbcore-framework/qb-inventory) -
 
 ## Screenshots
+
 ![Platform](https://imgur.com/KzmXIaY.png)
 ![Vehicle Spawner](https://imgur.com/bDYiFoG.png)
 ![Stash](https://imgur.com/8fvy9FA.png)
 ![On Duty/Off Duty](https://i.imgur.com/CM34EsL.png)
 
 ## Features
-- /setmechanic - Sets someone mechanic
-- /firemechanic - Fires a mechanic worker
-- On Duty/Off Duty
-- Placing vehicles to platform for repairing it part by part.
-- Towtruck, Blista, Minivan, Flatbed for workers.
+
+-   /setmechanic - Sets someone mechanic
+-   /firemechanic - Fires a mechanic worker
+-   On Duty/Off Duty
+-   Placing vehicles to platform for repairing it part by part.
+-   Towtruck, Blista, Minivan, Flatbed for workers.
 
 ## Installation
+
 ### Manual
-- Download the script and put it in the `[qb]` directory.
-- Import `qb-.sql` in your database
-- Add the following code to your server.cfg/resouces.cfg
+
+-   Download the script and put it in the `[qb]` directory.
+-   Import `qb-.sql` in your database
+-   Add the following code to your server.cfg/resouces.cfg
+
 ```
 ensure qb-core
 ensure qb-inventory
@@ -49,6 +55,7 @@ ensure qb-mechanicjob
 ```
 
 ## Configuration
+
 ```
 Config.AttachedVehicle = nil -- Don't touch
 
@@ -64,16 +71,6 @@ Config.MaxStatusValues = { -- Max health values for parts
     ["brakes"] = 100,
     ["clutch"] = 100,
     ["fuel"] = 100,
-}
-
-Config.ValuesLabels = { -- Labels of parts (will be shown at platform)
-    ["engine"] = "Motor",
-    ["body"] = "Body",
-    ["radiator"] = "Radiator",
-    ["axle"] = "Drive Shaft",
-    ["brakes"] = "Brakes",
-    ["clutch"] = "Clutch",
-    ["fuel"] = "Fuel Ttank",
 }
 
 Config.RepairCost = {
@@ -126,15 +123,15 @@ Config.Plates = { -- Platforms
         AttachedVehicle = nil,
     },
     [2] = {
-        coords = {x = 922.37, y = -979.86, z = 39.49, h = 271.5, r = 1.0}, 
+        coords = {x = 922.37, y = -979.86, z = 39.49, h = 271.5, r = 1.0},
         AttachedVehicle = nil,
     },
     [3] = {
-        coords = {x = 921.54, y = -962.17, z = 39.49, h = 274.5, r = 1.0}, 
+        coords = {x = 921.54, y = -962.17, z = 39.49, h = 274.5, r = 1.0},
         AttachedVehicle = nil,
     },
     [4] = {
-        coords = {x = 949.89, y = -947.75, z = 39.49, h = 90.5, r = 1.0}, 
+        coords = {x = 949.89, y = -947.75, z = 39.49, h = 90.5, r = 1.0},
         AttachedVehicle = nil,
     },
 }

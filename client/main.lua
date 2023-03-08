@@ -512,7 +512,7 @@ local function PartsMenu()
                 end
                 vehicleMenu[#vehicleMenu+1] = {
                     header = v,
-                    txt = "Status: " .. percentage .. ".0% / 100.0%",
+                    txt = Lang:t('parts_menu.status') .. percentage .. ".0% / 100.0%",
                     params = {
                         event = "qb-mechanicjob:client:PartMenu",
                         args = {
@@ -665,7 +665,7 @@ local function VehicleList()
         }
     end
     vehicleMenu[#vehicleMenu+1] = {
-        header = "⬅ Close Menu",
+        header = Lang:t('nodamage_menu.c_menu'),
         txt = "",
         params = {
             event = "qb-menu:client:closeMenu"

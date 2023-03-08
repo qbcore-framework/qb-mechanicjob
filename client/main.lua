@@ -757,6 +757,12 @@ RegisterNetEvent("qb-mechanicjob:client:RepairPart",function(data)
     RepairPart(partData)
 end)
 
+AddEventHandler('onResourceStart', function(resource)
+    if resource == GetCurrentResourceName() then
+        PlayerJob = QBCore.Functions.GetPlayerData().job
+    end
+end)
+
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     QBCore.Functions.GetPlayerData(function(PlayerData)
         PlayerJob = PlayerData.job
@@ -978,7 +984,6 @@ end)
 
 
 -- Threads
-
 CreateThread(function()
     local wait = 500
     while not LocalPlayer.state.isLoggedIn do

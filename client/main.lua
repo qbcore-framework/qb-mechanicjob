@@ -685,7 +685,7 @@ local function RepairPart(part)
     local hasitem = false
     local countitem = 0
     QBCore.Functions.TriggerCallback('qb-inventory:server:GetStashItems', function(StashItems)
-        for k,v in pairs(StashItems) do
+        for _,v in pairs(StashItems) do
             if v.name == PartData.item then
                 hasitem = true
                 if v.amount >= PartData.costs then

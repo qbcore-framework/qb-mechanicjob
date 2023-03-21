@@ -192,37 +192,26 @@ RegisterNetEvent('qb-vehicletuning:server:SetAttachedVehicle', function(veh, k)
     end
 end)
 
-RegisterNetEvent('qb-vehicletuning:server:CheckForItems', function(part)
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-    local RepairPart = Player.Functions.GetItemByName(Config.RepairCostAmount[part].item)
-
-    if RepairPart ~= nil then
-        if RepairPart.amount >= Config.RepairCostAmount[part].costs then
-            TriggerClientEvent('qb-vehicletuning:client:RepaireeePart', src, part)
-            Player.Functions.RemoveItem(Config.RepairCostAmount[part].item, Config.RepairCostAmount[part].costs)
-
-            for _ = 1, Config.RepairCostAmount[part].costs, 1 do
-                TriggerClientEvent('inventory:client:ItemBox', src,
-                    QBCore.Shared.Items[Config.RepairCostAmount[part].item], "remove")
-                Wait(500)
-            end
-        else
-            TriggerClientEvent('QBCore:Notify', src, Lang:t('notifications.not_enough') .. QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"] .. " (min. " ..
-                    Config.RepairCostAmount[part].costs .. "x)", "error")
-        end
-    else
-        TriggerClientEvent('QBCore:Notify', src, Lang:t('notifications.not_have') ..
-            QBCore.Shared.Items[Config.RepairCostAmount[part].item]["label"], "error")
-    end
-end)
-
 RegisterNetEvent('qb-mechanicjob:server:removePart', function(part, amount)
     local Player = QBCore.Functions.GetPlayer(source)
 
     if not Player then return end
 
     Player.Functions.RemoveItem(Config.RepairCost[part], amount)
+end)
+
+RegisterNetEvent('qb-mechanicjob:server:SaveStashItems', function(stash, item, cost)
+    local stashitems = MySQL.query.await('SELECT items FROM stashitems WHERE stash = ?', {stash})
+    local items = json.decode(stashitems[1].items)
+    for _, v in pairs(items) do
+        if v.name == item then
+            v.amount = v.amount - cost
+        end
+    end
+    MySQL.insert('INSERT INTO stashitems (stash, items) VALUES (:stash, :items) ON DUPLICATE KEY UPDATE items = :items', {
+		['stash'] = stash,
+		['items'] = json.encode(items)
+	})
 end)
 
 -- Commands

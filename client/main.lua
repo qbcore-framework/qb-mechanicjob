@@ -683,7 +683,6 @@ end
 local function RepairPart(part)
     local PartData = Config.RepairCostAmount[part]
     local hasitem = false
-    local indx = 0
     local countitem = 0
     QBCore.Functions.TriggerCallback('qb-inventory:server:GetStashItems', function(StashItems)
         for k,v in pairs(StashItems) do
@@ -691,7 +690,6 @@ local function RepairPart(part)
                 hasitem = true
                 if v.amount >= PartData.costs then
                     countitem = v.amount
-                    indx = k
                 end
             end
         end
@@ -704,22 +702,18 @@ local function RepairPart(part)
                 disableCombat = true,
             }, {}, {}, {}, function() -- Done
                 TriggerEvent('animations:client:EmoteCommandStart', {"c"})
-                if (countitem - PartData.costs) <= 0 then
-                    StashItems[indx] = nil
-                else
-                    countitem = (countitem - PartData.costs)
-                    StashItems[indx].amount = countitem
-                end
                 TriggerEvent('qb-vehicletuning:client:RepaireeePart', part)
-                TriggerServerEvent('qb-inventory:server:SaveStashItems', "mechanicstash", StashItems)
+                TriggerServerEvent('qb-mechanicjob:server:SaveStashItems', "mechanicstash", PartData.item, PartData.costs)
                 SetTimeout(250, function()
                     PartsMenu()
                 end)
             end, function()
                 QBCore.Functions.Notify(Lang:t('notifications.rep_canceled'), "error")
+                OpenMenu()
             end)
         else
             QBCore.Functions.Notify(Lang:t('notifications.not_materials'), 'error')
+            OpenMenu()
         end
     end, "mechanicstash")
 end

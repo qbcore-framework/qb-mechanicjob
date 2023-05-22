@@ -105,7 +105,7 @@ Config.Blip = {
     ['scale'] = 0.7,
     ['asShortRange'] = true,
     ['colour'] = 0,
-    ['alpha'] = 0.7 
+    ['alpha'] = 0.7
 }
 
 Config.Locations = {

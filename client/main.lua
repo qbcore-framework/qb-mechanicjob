@@ -986,16 +986,18 @@ CreateThread(function()
         Wait(wait)
     end
 
-    local Blip = AddBlipForCoord(Config.Locations["exit"].x, Config.Locations["exit"].y, Config.Locations["exit"].z)
-    SetBlipSprite (Blip, 446)
-    SetBlipDisplay(Blip, 4)
-    SetBlipScale  (Blip, 0.7)
-    SetBlipAsShortRange(Blip, true)
-    SetBlipColour(Blip, 0)
-    SetBlipAlpha(Blip, 0.7)
-    BeginTextCommandSetBlipName("STRING")
-    AddTextComponentSubstringPlayerName(Lang:t('labels.job_blip'))
-    EndTextCommandSetBlipName(Blip)
+    if Config.Blip['showBlip'] then
+        local Blip = AddBlipForCoord(Config.Locations["exit"].x, Config.Locations["exit"].y, Config.Locations["exit"].z)
+        SetBlipSprite (Blip, Config.Blip['sprite'])
+        SetBlipDisplay(Blip, Config.Blip['display'])
+        SetBlipScale  (Blip, Config.Blip['scale'])
+        SetBlipAsShortRange(Blip, Config.Blip['asShortRange'])
+        SetBlipColour(Blip, Config.Blip['colour'])
+        SetBlipAlpha(Blip, Config.Blip['alpha'])
+        BeginTextCommandSetBlipName("STRING")
+        AddTextComponentSubstringPlayerName(Lang:t('labels.job_blip'))
+        EndTextCommandSetBlipName(Blip)
+    end
 
     RegisterGarageZone()
     RegisterDutyTarget()

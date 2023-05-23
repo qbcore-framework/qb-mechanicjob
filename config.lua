@@ -98,6 +98,16 @@ Config.Plates = {
     },
 }
 
+Config.Blip = {
+    ['showBlip'] = true, -- change to false if you want to disable blip
+    ['sprite'] = 446,
+    ['display'] = 4,
+    ['scale'] = 0.7,
+    ['asShortRange'] = true,
+    ['colour'] = 0,
+    ['alpha'] = 0.7
+}
+
 Config.Locations = {
     ["exit"] = vector3(-339.04, -135.53, 39),
     ["duty"] = vector3(-323.39, -129.6, 39.01),

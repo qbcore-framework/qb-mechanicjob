@@ -8,7 +8,7 @@ Config.Targets = {}
 Config.AttachedVehicle = nil
 
 Config.AuthorizedIds = {
-    -- "insertcitizenidhere",
+    -- "insertcitizenidhere",    
 }
 
 Config.MaxStatusValues = {
@@ -23,7 +23,7 @@ Config.MaxStatusValues = {
 
 Config.ValuesLabels = {
     ["engine"] = Lang:t('labels.engine'),
-    ["body"] = Lang:t('labels.bodsy'),
+    ["body"] = Lang:t('labels.body'),
     ["radiator"] = Lang:t('labels.radiator'),
     ["axle"] = Lang:t('labels.axle'),
     ["brakes"] = Lang:t('labels.brakes'),

@@ -96,7 +96,11 @@ local function PartMenu(data)
             header = Lang:t('parts_menu.b_menu'),
             txt = Lang:t('parts_menu.d_menu'),
             params = {
-                event = "qb-mechanicjob:client:PartsMenu",
+                isAction = true,
+                event = function()
+                    PartsMenu()
+                end,
+                args = {}
             }
         },
         {
@@ -120,7 +124,11 @@ local function NoDamage()
             header = Lang:t('nodamage_menu.bh_menu'),
             txt = Lang:t('nodamage_menu.bd_menu'),
             params = {
-                event = "qb-mechanicjob:client:PartsMenu",
+                isAction = true,
+                event = function()
+                    PartsMenu()
+                end,
+                args = {}
             }
         },
         {
@@ -134,7 +142,7 @@ local function NoDamage()
     exports['qb-menu']:openMenu(noDamage)
 end
 
-local function PartsMenu()
+function PartsMenu()
     local vehicle = QBCore.Functions.GetClosestVehicle()
     local plate = QBCore.Functions.GetPlate(vehicle)
     if VehicleStatus[plate] ~= nil then
@@ -283,34 +291,6 @@ RegisterNetEvent('qb-mechanicjob:client:RepaireeePart', function(part)
 end)
 RegisterNetEvent('qb-mechanicjob:client:setVehicleStatus', function(plate, status)
     VehicleStatus[plate] = status
-end)
-
-RegisterNetEvent('qb-mechanicjob:client:getVehicleStatus', function()
-    if not (IsPedInAnyVehicle(PlayerPedId(), false)) then
-        local veh = GetVehiclePedIsIn(PlayerPedId(), true)
-        if veh ~= nil and veh ~= 0 then
-            local vehpos = GetEntityCoords(veh)
-            local pos = GetEntityCoords(PlayerPedId())
-            if #(pos - vehpos) < 5.0 then
-                if not IsThisModelABicycle(GetEntityModel(veh)) then
-                    local plate = QBCore.Functions.GetPlate(veh)
-                    if VehicleStatus[plate] ~= nil then
-                        SendStatusMessage(VehicleStatus[plate])
-                    else
-                        QBCore.Functions.Notify(Lang:t('notifications.uknown'), "error")
-                    end
-                else
-                    QBCore.Functions.Notify(Lang:t('notifications.not_valid'), "error")
-                end
-            else
-                QBCore.Functions.Notify(Lang:t('notifications.not_close'), "error")
-            end
-        else
-            QBCore.Functions.Notify(Lang:t('notifications.veh_first'), "error")
-        end
-    else
-        QBCore.Functions.Notify(Lang:t('notifications.outside'), "error")
-    end
 end)
 
 RegisterNetEvent('qb-mechanicjob:client:fixEverything', function()

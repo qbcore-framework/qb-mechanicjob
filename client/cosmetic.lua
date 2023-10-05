@@ -645,7 +645,7 @@ local function PlateIndex()
             icon = 'far fa-id-card',
             params = {
                 isAction = true,
-                event = function(data)
+                event = function()
                     SetVehicleNumberPlateTextIndex(vehicle, Config.PlateIndexes[i].id)
                     PlateIndex()
                 end,

@@ -1,6 +1,14 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local VehicleStatus = {}
 local VehicleDrivingDistance = {}
+local tunedVehicles = {}
+local Threshold = {
+    ['boost'] = {min = 1, max = 5},
+    ['acceleration'] = {min = 1, max = 5},
+    ['gearchange'] = {min = 1, max = 5},
+    ['breaking'] = {min = 1, max = 5},
+    ['drivetrain'] = {min = 1, max = 3},
+}
 
 -- Functions
 
@@ -58,7 +66,33 @@ QBCore.Functions.CreateCallback('qb-mechanicjob:server:GetStatus', function(_, c
     end
 end)
 
+QBCore.Functions.CreateCallback('qb-mechanicjob:server:HasChip', function(source, cb, data)
+    local src = source
+    local Ply = QBCore.Functions.GetPlayer(src)
+    local Chip = Ply.Functions.GetItemByName('tunerlaptop')
+    if data then
+        for k,v in pairs(data) do
+            if Threshold[k].min > tonumber(v) or Threshold[k].max < tonumber(v) then Chip = nil end
+        end
+    end
+    if Chip then cb(true) return end
+    DropPlayer(src, Lang:t("text.this_is_not_the_idea_is_it"))
+    cb(false)
+end)
+
+QBCore.Functions.CreateCallback('qb-mechanicjob:server:GetStatus', function(_, cb, plate)
+    cb(tunedVehicles[plate])
+end)
+
 -- Events
+
+RegisterNetEvent('qb-mechanicjob:server:TuneStatus', function(plate, bool)
+    if bool then
+        tunedVehicles[plate] = bool
+    else
+        tunedVehicles[plate] = nil
+    end
+end)
 
 RegisterNetEvent('qb-mechanicjob:server:SaveVehicleProps', function(vehicleProps)
     if IsVehicleOwned(vehicleProps.plate) then
@@ -220,7 +254,7 @@ end, "god")
 
 -- Items
 
-QBCore.Functions.CreateUseableItem('veh_toolbox', function(source, item)
+QBCore.Functions.CreateUseableItem('veh_toolbox', function(source)
     TriggerClientEvent('qb-mechanicjob:client:PartsMenu', source)
 end)
 
@@ -291,4 +325,10 @@ RegisterNetEvent('nitrous:server:removeItem', function()
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
     Player.Functions.RemoveItem('nitrous', 1)
+end)
+
+-- Tuner Chip
+
+QBCore.Functions.CreateUseableItem("tunerlaptop", function(source)
+    TriggerClientEvent('qb-tunerchip:client:openChip', source)
 end)

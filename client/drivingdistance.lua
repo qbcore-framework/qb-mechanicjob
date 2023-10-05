@@ -1,9 +1,14 @@
 local vehiclemeters = -1
 local previousvehiclepos = nil
 local CheckDone = false
-DrivingDistance = {}
+local DrivingDistance = {}
 
 -- Functions
+
+local function trim(plate)
+    if not plate then return nil end
+    return (string.gsub(plate, '^%s*(.-)%s*$', '%1'))
+end
 
 local function round(num, numDecimalPlaces)
     if numDecimalPlaces and numDecimalPlaces>0 then
@@ -28,14 +33,9 @@ local function GetDamageMultiplier(meters)
     return retval
 end
 
-local function trim(plate)
-    if not plate then return nil end
-    return (string.gsub(plate, '^%s*(.-)%s*$', '%1'))
-end
-
 -- Events
 
-RegisterNetEvent('qb-vehicletuning:client:UpdateDrivingDistance', function(amount, plate)
+RegisterNetEvent('qb-mechanicjob:client:UpdateDrivingDistance', function(amount, plate)
     DrivingDistance[plate] = amount
 end)
 
@@ -51,12 +51,12 @@ CreateThread(function()
             local seat = GetPedInVehicleSeat(veh, -1)
             local pos = GetEntityCoords(ped)
             local plate = trim(GetVehicleNumberPlateText(veh))
-            if plate ~= nil then
+            if not plate then
                 if seat == ped then
                     if not CheckDone then
                         if vehiclemeters == -1 then
                             CheckDone = true
-                            QBCore.Functions.TriggerCallback('qb-vehicletuning:server:IsVehicleOwned', function(IsOwned)
+                            QBCore.Functions.TriggerCallback('qb-mechanicjob:server:IsVehicleOwned', function(IsOwned)
                                 if IsOwned then
                                     if DrivingDistance[plate] ~= nil then
                                         vehiclemeters = DrivingDistance[plate]
@@ -98,13 +98,13 @@ CreateThread(function()
                                 local odd = math.random(3)
                                 local CurrentData = VehicleStatus[plate]
                                 if chance == odd then
-                                    for k, _ in pairs(Config.Damages) do
+                                    for k in pairs(Config.ValuesLabels) do
                                         local randmultiplier = (math.random(DamageData.multiplier.min, DamageData.multiplier.max) / 100)
                                         local newDamage = 0
                                         if CurrentData[k] - randmultiplier >= 0 then
                                             newDamage = CurrentData[k] - randmultiplier
                                         end
-                                        TriggerServerEvent('qb-vehicletuning:server:SetPartLevel', plate, k, newDamage)
+                                        TriggerServerEvent('qb-mechanicjob:server:SetPartLevel', plate, k, newDamage)
                                     end
                                 end
                             end
@@ -112,7 +112,7 @@ CreateThread(function()
                             local amount = round(DrivingDistance[plate] / 1000, -2)
 
                             TriggerEvent('hud:client:UpdateDrivingMeters', true, amount)
-                            TriggerServerEvent('qb-vehicletuning:server:UpdateDrivingDistance', DrivingDistance[plate], plate)
+                            TriggerServerEvent('qb-mechanicjob:server:UpdateDrivingDistance', DrivingDistance[plate], plate)
                         end
                     else
                         if invehicle then

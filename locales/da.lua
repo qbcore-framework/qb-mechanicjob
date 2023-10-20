@@ -1,7 +1,7 @@
 local Translations = {
     labels = {
         engine = 'Motor',
-        bodsy = 'Karrosseri',
+        body = 'Karrosseri',
         radiator = 'Radiator',
         axle = 'Drivaksel',
         brakes = 'Bremser',

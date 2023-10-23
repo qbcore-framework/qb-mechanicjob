@@ -18,7 +18,7 @@ local Translations = {
         veh_status = 'Status vehicul:',
         job_blip = 'Mecanic auto',
     },
-  
+
     lift_menu = {
         header_menu = 'Optiuni vehicul',
         header_vehdc = 'Deconecteaza vehicul',
@@ -29,7 +29,7 @@ local Translations = {
         desc_parts = 'Repara componente',
         c_menu = '⬅ Inchide meniul',
     },
-  
+
     parts_menu = {
         status = 'Statut: ',
         menu_header = 'Meniu componente',
@@ -38,15 +38,15 @@ local Translations = {
         d_menu = 'Inapoi la componente',
         c_menu = '⬅ Inchide meniul'
     },
-  
-      nodamage_menu = {
+
+    nodamage_menu = {
         header = 'No Damage',
         bh_menu = 'Back Menu',
         bd_menu = 'There Is No Damage To This Part!',
         c_menu = '⬅ Close Menu'
     },
-  
-      notifications = {
+
+    notifications = {
         not_enough = 'Nu ai suficient',
         not_have = 'Nu ai',
         not_materials = 'Nu ai suficiente materiale in depozit',

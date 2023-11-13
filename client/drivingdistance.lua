@@ -14,8 +14,8 @@ end
 
 local function ApplyComponentEffect(component) -- add custom effects here for each component in config
     if component == 'radiator' then
-        local engineHealth = GetVehicleEngineHealth(veh)
-        SetVehicleEngineHealth(veh, engineHealth - 50)
+        local engineHealth = GetVehicleEngineHealth(vehicle)
+        SetVehicleEngineHealth(vehicle, engineHealth - 50)
     elseif component == 'axle' then
         for i = 0, 360 do
             Wait(15)
@@ -62,7 +62,7 @@ end
 local function ApplyDamageBasedOnDistance(distance)
     if not Config.UseDistanceDamage then return end
     local damage = GetDamageAmount(distance)
-    local engineHealth = GetVehicleEngineHealth(veh)
+    local engineHealth = GetVehicleEngineHealth(vehicle)
     SetVehicleEngineHealth(vehicle, engineHealth - damage)
 end
 

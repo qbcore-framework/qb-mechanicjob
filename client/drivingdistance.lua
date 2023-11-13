@@ -1,154 +1,129 @@
-local vehiclemeters = -1
-local previousvehiclepos = nil
-local CheckDone = false
-DrivingDistance = {}
+local vehicle, plate
+local vehicleComponents = {}
+local drivingDistance = {}
 
--- Functions
+-- Function
 
-local function round(num, numDecimalPlaces)
-    if numDecimalPlaces and numDecimalPlaces>0 then
-      local mult = 10^numDecimalPlaces
-      return math.floor(num * mult + 0.5) / mult
+local function InitializeVehicleComponents()
+    if not Config.UseWearableParts then return end
+    vehicleComponents[plate] = {}
+    for part, data in pairs(Config.WearableParts) do
+        vehicleComponents[plate][part] = data.maxValue
     end
-    return math.floor(num + 0.5)
 end
 
-local function GetDamageMultiplier(meters)
-    local check = round(meters / 1000, -2)
-    local retval = nil
-    for k, v in pairs(Config.MinimalMetersForDamage) do
-        if check >= v.min and check <= v.max then
-            retval = k
-            break
-        elseif check >= Config.MinimalMetersForDamage[#Config.MinimalMetersForDamage].min then
-            retval = #Config.MinimalMetersForDamage
-            break
+local function ApplyComponentEffect(component) -- add custom effects here for each component in config
+    if component == 'radiator' then
+        local engineHealth = GetVehicleEngineHealth(veh)
+        SetVehicleEngineHealth(veh, engineHealth - 50)
+    elseif component == 'axle' then
+        for i = 0, 360 do
+            Wait(15)
+            SetVehicleSteeringScale(vehicle, i)
+        end
+    elseif component == 'brakes' then
+        SetVehicleHandbrake(vehicle, true)
+        Wait(5000)
+        SetVehicleHandbrake(vehicle, false)
+    elseif component == 'clutch' then
+        SetVehicleEngineOn(vehicle, false, false, true)
+        SetVehicleUndriveable(vehicle, true)
+        Wait(5000)
+        SetVehicleEngineOn(vehicle, true, false, true)
+        SetVehicleUndriveable(vehicle, false)
+    elseif component == 'fuel' then
+        local fuel = exports[Config.FuelResource]:GetFuel(vehicle)
+        exports[Config.FuelResource]:SetFuel(vehicle, fuel - 10)
+    end
+end
+
+local function DamageRandomComponent()
+    if not Config.UseWearableParts then return end
+    local componentKeys = {}
+    for component, _ in pairs(Config.WearableParts) do
+        componentKeys[#componentKeys + 1] = component
+    end
+    local componentToDamage = componentKeys[math.random(#componentKeys)]
+    vehicleComponents[plate][componentToDamage] = math.max(0, vehicleComponents[plate][componentToDamage] - Config.WearablePartsDamage)
+    if vehicleComponents[plate][componentToDamage] <= Config.DamageThreshold then
+        ApplyComponentEffect(componentToDamage)
+    end
+end
+
+local function GetDamageAmount(distance)
+    for _, tier in ipairs(Config.MinimalMetersForDamage) do
+        if distance >= tier.min and distance < tier.max then
+            return tier.damage
         end
     end
-    return retval
+    return 0
 end
 
-local function trim(plate)
-    if not plate then return nil end
-    return (string.gsub(plate, '^%s*(.-)%s*$', '%1'))
+local function ApplyDamageBasedOnDistance(distance)
+    if not Config.UseDistanceDamage then return end
+    local damage = GetDamageAmount(distance)
+    local engineHealth = GetVehicleEngineHealth(veh)
+    SetVehicleEngineHealth(vehicle, engineHealth - damage)
 end
 
--- Events
+local function TrackDistance()
+    CreateThread(function()
+        while true do
+            Wait(0)
+            if not vehicle then break end
 
-RegisterNetEvent('qb-vehicletuning:client:UpdateDrivingDistance', function(amount, plate)
-    DrivingDistance[plate] = amount
-end)
+            local ped = PlayerPedId()
+            local isDriver = GetPedInVehicleSeat(vehicle, -1) == ped
+            local speed = GetEntitySpeed(vehicle)
 
--- Threads
-
-CreateThread(function()
-    Wait(500)
-    while true do
-        local ped = PlayerPedId()
-        local invehicle = IsPedInAnyVehicle(ped, true)
-        if invehicle then
-            local veh = GetVehiclePedIsIn(ped)
-            local seat = GetPedInVehicleSeat(veh, -1)
-            local pos = GetEntityCoords(ped)
-            local plate = trim(GetVehicleNumberPlateText(veh))
-            if plate ~= nil then
-                if seat == ped then
-                    if not CheckDone then
-                        if vehiclemeters == -1 then
-                            CheckDone = true
-                            QBCore.Functions.TriggerCallback('qb-vehicletuning:server:IsVehicleOwned', function(IsOwned)
-                                if IsOwned then
-                                    if DrivingDistance[plate] ~= nil then
-                                        vehiclemeters = DrivingDistance[plate]
-                                    else
-                                        DrivingDistance[plate] = 0
-                                        vehiclemeters = DrivingDistance[plate]
-                                    end
-                                else
-                                    if DrivingDistance[plate] ~= nil then
-                                        vehiclemeters = DrivingDistance[plate]
-                                    else
-                                        DrivingDistance[plate] = math.random(111111, 999999)
-                                        vehiclemeters = DrivingDistance[plate]
-                                    end
-                                end
-                            end, plate)
-                        end
-                    end
-                else
-                    if vehiclemeters == -1 then
-                        if DrivingDistance[plate] ~= nil then
-                            vehiclemeters = DrivingDistance[plate]
-                        end
-                    end
-                end
-
-                if vehiclemeters ~= -1 then
-                    if seat == ped then
-                        if previousvehiclepos ~= nil then
-                            local Distance = #(pos - previousvehiclepos)
-                            local DamageKey = GetDamageMultiplier(vehiclemeters)
-
-                            vehiclemeters = vehiclemeters + ((Distance / 100) * 325)
-                            DrivingDistance[plate] = vehiclemeters
-
-                            if DamageKey ~= nil then
-                                local DamageData = Config.MinimalMetersForDamage[DamageKey]
-                                local chance = math.random(3)
-                                local odd = math.random(3)
-                                local CurrentData = VehicleStatus[plate]
-                                if chance == odd then
-                                    for k, _ in pairs(Config.Damages) do
-                                        local randmultiplier = (math.random(DamageData.multiplier.min, DamageData.multiplier.max) / 100)
-                                        local newDamage = 0
-                                        if CurrentData[k] - randmultiplier >= 0 then
-                                            newDamage = CurrentData[k] - randmultiplier
-                                        end
-                                        TriggerServerEvent('qb-vehicletuning:server:SetPartLevel', plate, k, newDamage)
-                                    end
-                                end
-                            end
-
-                            local amount = round(DrivingDistance[plate] / 1000, -2)
-
-                            TriggerEvent('hud:client:UpdateDrivingMeters', true, amount)
-                            TriggerServerEvent('qb-vehicletuning:server:UpdateDrivingDistance', DrivingDistance[plate], plate)
-                        end
+            if isDriver then
+                if plate and speed > 5 then
+                    if not drivingDistance[plate] then
+                        drivingDistance[plate] = { distance = 0, lastCoords = GetEntityCoords(vehicle) }
+                        InitializeVehicleComponents()
                     else
-                        if invehicle then
-                            if DrivingDistance[plate] ~= nil then
-                                local amount = round(DrivingDistance[plate] / 1000, -2)
-                                TriggerEvent('hud:client:UpdateDrivingMeters', true, amount)
+                        local newCoords = GetEntityCoords(vehicle)
+                        local distance = #(drivingDistance[plate].lastCoords - newCoords)
+                        if distance < 5 then
+                            drivingDistance[plate].distance = drivingDistance[plate].distance + distance
+                            drivingDistance[plate].lastCoords = newCoords
+                            -- Engine damage
+                            local accumulatedDistance = drivingDistance[plate].distance
+                            if accumulatedDistance >= Config.MinimalMetersForDamage[1].min then
+                                ApplyDamageBasedOnDistance(accumulatedDistance)
                             end
-                        else
-                            if vehiclemeters ~= -1 then
-                                vehiclemeters = -1
-                            end
-                            if CheckDone then
-                                CheckDone = false
+                            -- Parts Damage
+                            local randomNumber = math.random(1, 1000)
+                            if randomNumber <= Config.WearablePartsChance then
+                                DamageRandomComponent()
                             end
                         end
                     end
                 end
-
-                previousvehiclepos = pos
-            end
-        else
-            if vehiclemeters ~= -1 then
-                vehiclemeters = -1
-            end
-            if CheckDone then
-                CheckDone = false
-            end
-            if previousvehiclepos ~= nil then
-                previousvehiclepos = nil
+            else
+                if drivingDistance[plate] then
+                    TriggerServerEvent('qb-mechanicjob:server:updateDrivingDistance', plate, drivingDistance[plate].distance)
+                    TriggerServerEvent('qb-mechanicjob:server:updateVehicleComponents', plate, vehicleComponents[plate])
+                end
+                plate = nil
+                vehicle = nil
+                break
             end
         end
+    end)
+end
 
-        if invehicle then
-            Wait(2000)
-        else
-            Wait(500)
-        end
+-- Handler
+
+AddEventHandler('gameEventTriggered', function(event)
+    if event == 'CEventNetworkPlayerEnteredVehicle' then
+        if not Config.UseDistance then return end
+        vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+        local originalPlate = GetVehicleNumberPlateText(vehicle)
+        if not originalPlate then return end
+        plate = Trim(originalPlate)
+        local vehicleClass = GetVehicleClass(vehicle)
+        if Config.IgnoreClasses[vehicleClass] then return end
+        TrackDistance()
     end
 end)

@@ -1,22 +1,18 @@
 fx_version 'cerulean'
 game 'gta5'
-
-description 'QB-MechanicJob'
-version '2.1.1'
+lua54 'yes'
+description 'qb-mechanicjob'
+version '3.0.0'
 
 shared_scripts {
     '@qb-core/shared/locale.lua',
     'locales/en.lua',
     'locales/*.lua',
-    'config.lua',
+    'config/*.lua',
 }
 
 client_scripts {
-    'client/main.lua',
-    'client/drivingdistance.lua',
-    '@PolyZone/client.lua',
-    '@PolyZone/BoxZone.lua',
-    '@PolyZone/CircleZone.lua',
+    'client/*.lua',
 }
 
 server_scripts {
@@ -24,4 +20,13 @@ server_scripts {
     'server/main.lua'
 }
 
-lua54 'yes'
+ui_page 'html/index.html'
+
+files {
+    'html/*',
+    'carcols_gen9.meta',
+    'carmodcols_gen9.meta'
+}
+
+data_file 'CARCOLS_GEN9_FILE' 'carcols_gen9.meta'
+data_file 'CARMODCOLS_GEN9_FILE' 'carmodcols_gen9.meta'

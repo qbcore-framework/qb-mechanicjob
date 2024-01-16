@@ -154,6 +154,7 @@ CreateThread(function()
                         maxweight = 4000000,
                         slots = 100,
                     })
+                    TriggerEvent('inventory:client:SetCurrentStash', k .. '_stash')
                 end
             } },
             distance = 2.0

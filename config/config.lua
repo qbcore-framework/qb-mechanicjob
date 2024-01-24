@@ -23,11 +23,11 @@ Config.MinimalMetersForDamage = {              -- unused if Config.UseDistanceDa
 }
 
 Config.WearableParts = { -- unused if Config.UseWearableParts is false (feel free to add/remove parts)
-    radiator = { label = 'Radiator', maxValue = 100, repair = { steel = 2 } },
-    axle = { label = 'Axle', maxValue = 100, repair = { aluminum = 2 } },
-    brakes = { label = 'Brakes', maxValue = 100, repair = { copper = 2 } },
-    clutch = { label = 'Clutch', maxValue = 100, repair = { copper = 2 } },
-    fuel = { label = 'Fuel', maxValue = 100, repair = { plastic = 2 } },
+    radiator = { label = Lang:t('menu.radiator_repair'), maxValue = 100, repair = { steel = 2 } },
+    axle = { label = Lang:t('menu.axle_repair'), maxValue = 100, repair = { aluminum = 2 } },
+    brakes = { label = Lang:t('menu.brakes_repair'), maxValue = 100, repair = { copper = 2 } },
+    clutch = { label = Lang:t('menu.clutch_repair'), maxValue = 100, repair = { copper = 2 } },
+    fuel = { label = Lang:t('menu.fuel_repair'), maxValue = 100, repair = { plastic = 2 } },
 }
 
 Config.Shops = {

@@ -31,7 +31,8 @@ local function GetPaints(category)
     for i = 1, #Config.Paints[category] do
         Paints[#Paints + 1] = {
             value = Config.Paints[category][i].id,
-            text = Config.Paints[category][i].label
+            text = Config.Paints[category][i].label,
+            bgcolor = '#' .. Config.Paints[category][i].hex
         }
     end
     return Paints

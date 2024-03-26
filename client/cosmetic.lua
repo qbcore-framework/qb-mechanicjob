@@ -656,6 +656,10 @@ RegisterNetEvent('qb-mechanicjob:client:vehicleSetColors', function(netId, secti
         local pearlescentColor, _ = GetVehicleExtraColours(vehicle)
         SetVehicleExtraColours(vehicle, pearlescentColor, tonumber(colorIndex))
     end
+
+        
+    local props = QBCore.Functions.GetVehicleProperties(vehicle)
+    TriggerServerEvent('qb-mechanicjob:server:SaveVehicleProps', props)
 end)
 
 RegisterNetEvent('qb-mechanicjob:client:startParticles', function(netId, color)

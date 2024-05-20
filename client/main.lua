@@ -149,42 +149,8 @@ CreateThread(function()
                 label = Lang:t('target.stash'),
                 icon = 'fas fa-box-open',
                 job = v.managed and k or nil,
-                action = function()
-                    TriggerServerEvent('inventory:server:OpenInventory', 'stash', k .. '_stash', {
-                        maxweight = 4000000,
-                        slots = 100,
-                    })
-                    TriggerEvent('inventory:client:SetCurrentStash', k .. '_stash')
-                end
-            } },
-            distance = 2.0
-        })
-
-        exports['qb-target']:AddCircleZone(k .. '_shop', v.shop, 0.5, {
-            name = k .. '_shop',
-            debugPoly = false,
-            useZ = true
-        }, {
-            options = { {
-                label = Lang:t('target.shop'),
-                icon = 'fas fa-cart-shopping',
-                job = v.managed and k or nil,
-                action = function()
-                    local ShopItems = {}
-                    ShopItems.items = {}
-                    ShopItems.label = k .. '_shop'
-                    for i = 1, #v.shopItems do
-                        ShopItems.items[#ShopItems.items + 1] = {
-                            name = v.shopItems[i].name,
-                            item = v.shopItems[i].name,
-                            price = v.shopItems[i].price,
-                            amount = v.shopItems[i].amount,
-                            type = 'item',
-                            slot = i,
-                        }
-                    end
-                    TriggerServerEvent('inventory:server:OpenInventory', 'shop', k .. '_shop', ShopItems)
-                end
+                type = 'server',
+                event = 'qb-mechanicjob:server:stash',
             } },
             distance = 2.0
         })

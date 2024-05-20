@@ -94,6 +94,25 @@ end)
 
 -- Events
 
+RegisterNetEvent('qb-mechanicjob:server:stash', function(data)
+    local src = source
+    local shopName = data.job
+    if not Config.Shops[shopName] then return end
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+    if Config.Shops[shopName].managed and Player.PlayerData.job.name ~= shopName then return end
+    local playerPed = GetPlayerPed(src)
+    local playerCoords = GetEntityCoords(playerPed)
+    local stashCoords = Config.Shops[shopName].stash
+    if #(playerCoords - stashCoords) < 2.5 then
+        local stashName = shopName .. '_stash'
+        exports['qb-inventory']:OpenInventory(src, stashName, {
+            maxweight = 4000000,
+            slots = 100,
+        })
+    end
+end)
+
 RegisterNetEvent('qb-mechanicjob:server:sprayVehicleCustom', function(netId, section, type, color)
     local vehicle = NetworkGetEntityFromNetworkId(netId)
     local vehicleCoords = GetEntityCoords(vehicle)
@@ -225,8 +244,8 @@ RegisterNetEvent('qb-mechanicjob:server:removeItem', function(part, amount)
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
     if not amount then amount = 1 end
-    if not Player.Functions.RemoveItem(part, amount) then DropPlayer(src, 'Tried to remove item') end
-    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[part], 'remove')
+    if not exports['qb-inventory']:RemoveItem(src, part, amount, false, 'qb-mechanicjob:server:removeItem') then DropPlayer(src, 'qb-mechanicjob:server:removeItem') end
+    TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items[part], 'remove')
 end)
 
 -- Items

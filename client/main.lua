@@ -2,7 +2,7 @@ PlayerData = {}
 
 -- Handlers
 
-AddEventHandler('OnResourceStart', function(resourceName)
+AddEventHandler('onResourceStart', function(resourceName)
     if (GetCurrentResourceName() ~= resourceName) then return end
     PlayerData = QBCore.Functions.GetPlayerData()
 end)

@@ -10,6 +10,7 @@ local Translations = {
     warning = {
         not_tuned = 'Vehicle not tuned',
         no_materials = 'Not enough materials',
+        no_vehicle = 'No vehicle found',
     },
     target = {
         duty = 'Toggle Duty',

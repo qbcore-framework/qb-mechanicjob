@@ -3,6 +3,32 @@ local nitrousActive = false
 local nitrousVehicles = {}
 
 -- Functions
+function CreateVehiclePurgeSpray(vehicle, xOffset, yOffset, zOffset, xRot, yRot, zRot, scale)
+    UseParticleFxAssetNextCall('core')
+    return StartParticleFxLoopedOnEntity('ent_sht_steam', vehicle, xOffset, yOffset, zOffset, xRot, yRot, zRot, scale, false, false, false)
+end
+
+function CreateVehicleLightTrail(vehicle, bone, scale)
+    UseParticleFxAssetNextCall('core')
+    local ptfx = StartParticleFxLoopedOnEntityBone('veh_light_red_trail', vehicle, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, bone, scale, false, false, false)
+    SetParticleFxLoopedEvolution(ptfx, "speed", 1.0, false)
+    return ptfx
+end
+
+function StopVehicleLightTrail(ptfx, duration)
+    Citizen.CreateThread(function()
+      local startTime = GetGameTimer()
+      local endTime = GetGameTimer() + duration
+      while GetGameTimer() < endTime do 
+        Citizen.Wait(0)
+        local now = GetGameTimer()
+        local scale = (endTime - now) / duration
+        SetParticleFxLoopedScale(ptfx, scale)
+        SetParticleFxLoopedAlpha(ptfx, scale)
+      end
+      StopParticleFxLooped(ptfx)
+    end)
+end
 
 local function ListenForNitrous()
     CreateThread(function()
@@ -17,17 +43,27 @@ local function ListenForNitrous()
                     TriggerServerEvent('qb-mechanicjob:server:syncNitrousFlames', netId, true)
                     nitrousActive = true
                 end
+                if IsControlJustPressed(0, 36) then
+                    TriggerServerEvent('qb-mechanicjob:server:syncPurgeSmoke', netId, true)
+                    purgeActive = true
+                end
+
                 if nitrousActive then -- per frame effect & updates
                     SetVehicleBoostActive(vehicle, true)
+                    SetVehicleLightTrailEnabled(vehicle, true)
                     SetVehicleCheatPowerIncrease(vehicle, Config.NitrousBoost)
                     nitrousVehicles[plate].level = nitrousVehicles[plate].level - Config.NitrousUsage
                     TriggerEvent('hud:client:UpdateNitrous', nitrousVehicles[plate].level, nitrousVehicles[plate].hasnitro)
                 end
-                if IsControlJustReleased(0, 155) or nitrousVehicles[plate].level <= 0 then
+
+                if (nitrousActive and (IsControlJustReleased(0, 155) or nitrousVehicles[plate].level <= 0)) or (purgeActive and IsControlJustReleased(0, 36)) then
                     nitrousActive = false
+                    purgeActive = false
                     AnimpostfxStop('RaceTurbo')
                     SetVehicleBoostActive(vehicle, false)
+                    SetVehicleLightTrailEnabled(vehicle, false)
                     TriggerServerEvent('qb-mechanicjob:server:syncNitrousFlames', netId, false)
+                    TriggerServerEvent('qb-mechanicjob:server:syncPurgeSmoke', netId, false)
                     if nitrousVehicles[plate].level <= 0 then
                         nitrousVehicles[plate].hasnitro = false
                         TriggerServerEvent('qb-mechanicjob:server:syncNitrous', plate, false)
@@ -45,6 +81,7 @@ local function ListenForNitrous()
                 vehicle = nil
                 netId = nil
                 nitrousActive = false
+                purgeActive = false
                 TriggerEvent('hud:client:UpdateNitrous', 0, false)
                 break
             end
@@ -75,6 +112,12 @@ RegisterNetEvent('qb-mechanicjob:client:syncNitrousFlames', function(net, toggle
     if not NetworkDoesEntityExistWithNetworkId(net) then return end
     local veh = NetworkGetEntityFromNetworkId(net)
     SetVehicleNitroEnabled(veh, toggle)
+end)
+
+RegisterNetEvent('qb-mechanicjob:client:syncPurgeSmoke', function(netId, enabled)
+    if not NetworkDoesEntityExistWithNetworkId(netId) then return end
+    local veh = NetworkGetEntityFromNetworkId(netId)
+    SetVehicleNitroPurgeEnabled(veh, enabled)
 end)
 
 RegisterNetEvent('qb-mechanicjob:client:installNitrous', function()

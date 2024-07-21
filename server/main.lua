@@ -194,6 +194,11 @@ RegisterNetEvent('qb-mechanicjob:server:syncNitrousFlames', function(netId, togg
     TriggerClientEvent('qb-mechanicjob:client:syncNitrousFlames', -1, netId, toggle)
 end)
 
+RegisterNetEvent('qb-mechanicjob:server:syncPurgeSmoke')
+AddEventHandler('qb-mechanicjob:server:syncPurgeSmoke', function(netId, enabled)
+    TriggerClientEvent('qb-mechanicjob:client:syncPurgeSmoke', -1, netId, enabled)
+end)
+
 RegisterNetEvent('qb-mechanicjob:server:tuneStatus', function(plate)
     if not tunedVehicles[plate] then
         tunedVehicles[plate] = true

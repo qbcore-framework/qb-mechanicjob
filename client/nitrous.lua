@@ -1,5 +1,6 @@
 local vehicle, plate, netId
 local nitrousActive = false
+local purgeActive = false
 local nitrousVehicles = {}
 
 -- Functions
@@ -17,16 +18,16 @@ end
 
 function StopVehicleLightTrail(ptfx, duration)
     Citizen.CreateThread(function()
-      local startTime = GetGameTimer()
-      local endTime = GetGameTimer() + duration
-      while GetGameTimer() < endTime do 
-        Citizen.Wait(0)
-        local now = GetGameTimer()
-        local scale = (endTime - now) / duration
-        SetParticleFxLoopedScale(ptfx, scale)
-        SetParticleFxLoopedAlpha(ptfx, scale)
-      end
-      StopParticleFxLooped(ptfx)
+        local startTime = GetGameTimer()
+        local endTime = GetGameTimer() + duration
+        while GetGameTimer() < endTime do 
+            Citizen.Wait(0)
+            local now = GetGameTimer()
+            local scale = (endTime - now) / duration
+            SetParticleFxLoopedScale(ptfx, scale)
+            SetParticleFxLoopedAlpha(ptfx, scale)
+        end
+        StopParticleFxLooped(ptfx)
     end)
 end
 

@@ -34,10 +34,9 @@ function SetVehicleNitroPurgeEnabled(vehicle, enabled)
                 StopParticleFxLooped(particleId)
             end
         end
-
+        
         vehicles[vehicle] = nil
         particles[vehicle] = nil
-
         --print("Purge smoke disabled for vehicle", vehicle)
     end
 end

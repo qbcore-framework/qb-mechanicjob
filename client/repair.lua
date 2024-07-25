@@ -106,9 +106,10 @@ end)
 
 RegisterNetEvent('qb-mechanicjob:client:repairVehicle', function()
     local vehicle, distance = QBCore.Functions.GetClosestVehicle()
+    if vehicle == 0 or distance >= 5.0 then return end
     local engineHealth = GetVehicleEngineHealth(vehicle)
     local bodyHealth = GetVehicleBodyHealth(vehicle)
-    if vehicle ~= 0 and distance <= 5.0 or IsNearBone(vehicle, 'engine') then
+    if IsNearBone(vehicle, 'engine') then
         QBCore.Functions.Progressbar('repairing_vehicle', Lang:t('progress.repair_vehicle'), 10000, false, true, {
             disableMovement = true,
             disableCarMovement = true,

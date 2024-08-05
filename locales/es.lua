@@ -23,6 +23,7 @@ local Translations = {
         none = 'Ninguno',
         back = 'Volver',
         close = 'Cerrar',
+        defaultmod = 'De serie',
         submit = 'Confirmar',
         status = 'Estado',
         vehicle_stats = 'Datos del vehículo',

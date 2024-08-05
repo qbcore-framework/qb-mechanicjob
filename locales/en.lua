@@ -23,6 +23,7 @@ local Translations = {
         none = 'None',
         back = 'Back',
         close = 'Close',
+        defaultmod = 'Default',
         submit = 'Submit',
         status = 'Status',
         vehicle_stats = 'Vehicle Stats',

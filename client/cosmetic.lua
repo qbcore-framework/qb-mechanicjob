@@ -262,6 +262,21 @@ function ExteriorModList(id, vehicle, label)
             args = {}
         }
     }
+    
+    mods[#mods + 1] = {
+        header = Lang:t('menu.defaultmod'),
+        icon = 'fas fa-backward',
+        params = {
+            isAction = true,
+            event = function()
+                SetVehicleModKit(vehicle, 0)
+                SetVehicleMod(vehicle, id, -1, false)
+                ExteriorModList(id, vehicle, label)
+            end,
+            args = {}
+        }
+    }
+    
     for i = 1, GetNumVehicleMods(vehicle, id) - 1 do
         mods[#mods + 1] = {
             header = GetLabelText(GetModTextLabel(vehicle, id, i)),

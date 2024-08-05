@@ -196,6 +196,21 @@ function InteriorModList(id, vehicle, label)
             args = {}
         }
     }
+
+    mods[#mods + 1] = {
+        header = Lang:t('menu.defaultmod'),
+            params = {
+                isAction = true,
+                event = function(data)
+                    SetVehicleModKit(vehicle, 0)
+                    SetVehicleMod(vehicle, data.modType, -1, false)
+                    InteriorModList(id, vehicle, label)
+                end,
+                args = {
+                }
+            }
+    }
+    
     for i = 0, GetNumVehicleMods(vehicle, id) - 1 do
         local modHeader
         if id == 14 then
@@ -253,6 +268,7 @@ function ExteriorModList(id, vehicle, label)
     local mods = { { header = label, isMenuHeader = true, icon = 'fas fa-car-side' } }
     mods[#mods + 1] = {
         header = Lang:t('menu.back'),
+        icon = 'fas fa-backward',
         params = {
             isAction = true,
             event = function()
@@ -264,7 +280,6 @@ function ExteriorModList(id, vehicle, label)
     
     mods[#mods + 1] = {
         header = Lang:t('menu.defaultmod'),
-        icon = 'fas fa-backward',
         params = {
             isAction = true,
             event = function()

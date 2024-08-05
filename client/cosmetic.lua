@@ -253,7 +253,6 @@ function ExteriorModList(id, vehicle, label)
     local mods = { { header = label, isMenuHeader = true, icon = 'fas fa-car-side' } }
     mods[#mods + 1] = {
         header = Lang:t('menu.back'),
-        icon = 'fas fa-backward',
         params = {
             isAction = true,
             event = function()

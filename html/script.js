@@ -13,7 +13,7 @@ const navbarOptions = {
         { id: "fClutchChangeRateScaleDownShift", label: "Clutch Speed Downshift", description: "Higher value = faster shifts", min: 0, max: 100 },
     ],
     braking: [
-        { id: "fSteeringLock", label: "Steering Lock", description: "Maximum steering angle of the wheels", min: 0, max: 1 },
+        { id: "fSteeringLock", label: "Steering Lock", description: "Maximum steering angle of the wheels", min: 1, max: 90 },
         { id: "fBrakeForce", label: "Brake Force", description: "Overall braking power", min: 0, max: 100 },
         { id: "fBrakeBiasFront", label: "Brake Bias Front", description: "Rear: 0.0 | Equal: 0.5 | Front: 1.0", min: 0, max: 1 },
         { id: "fHandBrakeForce", label: "Hand Brake Force", description: "Sets the strength of the handbrake", min: 0, max: 100 },

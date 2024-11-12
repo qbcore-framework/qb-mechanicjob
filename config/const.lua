@@ -177,6 +177,13 @@ Config.PlateIndexes = {
     { label = 'Blue on White 2', id = 3 },
     { label = 'Blue on White 3', id = 4 },
     { label = 'Yankton',         id = 5 },
+    { label = 'Ecola',           id = 6 },
+    { label = 'Las Venturas',    id = 7 },
+    { label = 'Liberty City',    id = 8 },
+    { label = 'LS Car Meet',     id = 9 },
+    { label = 'Panic',           id = 10 },
+    { label = 'Pounders',        id = 11 },
+    { label = 'Sprunk',          id = 12 },
 }
 
 -- https://docs.fivem.net/natives/?_0x2AA720E4287BF269
